@@ -7,10 +7,12 @@ import org.junit.Test;
 import tk.aizydorczyk.api.ExcelWriter;
 import tk.aizydorczyk.model.AuthorDto;
 import tk.aizydorczyk.model.BookDto;
+import tk.aizydorczyk.model.Header;
 import tk.aizydorczyk.model.LenderDto;
 import tk.aizydorczyk.util.CoordinatesGenerator;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,11 +40,11 @@ public class ExcelWriterTest {
 
 
     @Test
-    public void shouldCount11fields() throws IllegalAccessException {
+    public void shouldCreate12Headers() throws IllegalAccessException {
         CoordinatesGenerator coordinatesGenerator = CoordinatesGenerator.ofObjects(dtos);
-        Long numberOfAllFields = (Long) FieldUtils.getField(coordinatesGenerator.getClass(),"numberOfAllFields", true).get(coordinatesGenerator);
+        ArrayList<Header> headers = (ArrayList<Header>) FieldUtils.getField(coordinatesGenerator.getClass(), "headers", true).get(coordinatesGenerator);
 
-        Assert.assertEquals(Long.valueOf(11L),numberOfAllFields);
+        Assert.assertEquals(12L,headers.size());
     }
 
 }
