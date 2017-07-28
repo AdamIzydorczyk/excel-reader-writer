@@ -1,18 +1,15 @@
 package tk.aizydorczyk.writer;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import tk.aizydorczyk.api.ExcelWriter;
 import tk.aizydorczyk.model.AuthorDto;
 import tk.aizydorczyk.model.BookDto;
 import tk.aizydorczyk.model.Header;
 import tk.aizydorczyk.model.LenderDto;
-import tk.aizydorczyk.util.CoordinatesGenerator;
+import tk.aizydorczyk.util.header.HeadersInitializer;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,11 +35,10 @@ public class ExcelWriterTest {
         dtos = Arrays.asList(book1,book2);
     }
 
-
     @Test
-    public void shouldCreate12Headers() throws IllegalAccessException {
-        CoordinatesGenerator coordinatesGenerator = CoordinatesGenerator.ofObjects(dtos);
-        ArrayList<Header> headers = (ArrayList<Header>) FieldUtils.getField(coordinatesGenerator.getClass(), "headers", true).get(coordinatesGenerator);
+    public void shouldInitialize12Headers() throws IllegalAccessException {
+        HeadersInitializer headersInitializer = HeadersInitializer.ofAnnotatedObjects(dtos);
+        List<Header> headers = headersInitializer.initialize();
 
         Assert.assertEquals(12L,headers.size());
     }
