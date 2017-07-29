@@ -39,6 +39,7 @@ public class HeadersInitializer {
 
         if (upperHeader != null) {
             topHeader.setUpperHeader(upperHeader);
+            upperHeader.getBottomHeaders().add(topHeader);
         }
 
         headers.add(topHeader);
@@ -83,6 +84,7 @@ public class HeadersInitializer {
     private void createHeaderForSimpleType(Header upperHeader, Header bottomHeader, ExcelColumn excelColumnAnnotation) {
         bottomHeader.setHeaderName(excelColumnAnnotation.header());
         bottomHeader.setUpperHeader(upperHeader);
+        upperHeader.getBottomHeaders().add(bottomHeader);
         headers.add(bottomHeader);
     }
 
