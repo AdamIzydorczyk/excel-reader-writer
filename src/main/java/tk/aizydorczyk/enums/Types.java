@@ -2,15 +2,15 @@ package tk.aizydorczyk.enums;
 
 public enum Types {
 
-    LIST("java.util.List");
+	LIST("java.util.List");
 
-    private String type;
+	private String type;
 
-    Types(String type) {
-        this.type = type;
-    }
+	Types(String type) {
+		this.type = type;
+	}
 
-    public String getType() {
-        return type;
-    }
+	public String getType() {
+		return type;
+	}
 }

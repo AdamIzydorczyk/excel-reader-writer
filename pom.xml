@@ -6,7 +6,7 @@
 
     <groupId>tk.aizydorczyk</groupId>
     <artifactId>excel-reader-writer</artifactId>
-    <version>0.2-ALFA</version>
+    <version>0.3-ALFA</version>
 
     <build>
         <plugins>

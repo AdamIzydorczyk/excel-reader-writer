@@ -9,10 +9,10 @@ import tk.aizydorczyk.common.annotation.ExcelGroup;
 @Data
 @Builder
 public class AuthorDto {
-    @ExcelColumn(header = "AUTHOR_ID")
-    private Long id;
-    @ExcelColumn(header = "AUTHOR_FIRST_NAME")
-    private String firstName;
-    @ExcelColumn(header = "AUTHOR_LAST_NAME")
-    private String lastName;
+	@ExcelColumn(header = "AUTHOR_ID")
+	private Long id;
+	@ExcelColumn(header = "AUTHOR_FIRST_NAME")
+	private String firstName;
+	@ExcelColumn(header = "AUTHOR_LAST_NAME")
+	private String lastName;
 }
