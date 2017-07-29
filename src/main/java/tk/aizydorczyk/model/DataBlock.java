@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class DataBlock {
-    private Long startRowPosition;
-    private Long endRowPosition;
+	private Long startRowPosition;
+	private Long endRowPosition;
 }
