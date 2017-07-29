@@ -8,12 +8,17 @@ public class HeadersGenerator {
 
     private HeadersInitializer headersInitializer;
 
+    private HeadersCoordinatesCalculator headersCoordinatesCalculator;
+
     private HeadersGenerator(List<?> objects) {
         this.headersInitializer = HeadersInitializer.ofAnnotatedObjects(objects);
+        this.headersCoordinatesCalculator = new HeadersCoordinatesCalculator();
     }
 
     public List<Header> generate(List<?> objects) {
-        return headersInitializer.initialize();
+        List<Header> initializedHeaders = headersInitializer.initialize();
+        List<Header> calculatedHeaders = headersCoordinatesCalculator.calculate(initializedHeaders);
+        return calculatedHeaders;
     }
 
     public static HeadersGenerator ofAnnotatedObjects(List<?> objects) {

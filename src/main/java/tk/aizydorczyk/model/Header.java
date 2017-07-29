@@ -14,4 +14,8 @@ public class Header {
     private Header upperHeader;
     private List<Header> bottomHeaders = new ArrayList<>();
     private List<Cell> cells;
+
+    public boolean isMainHeader(){
+        return upperHeader == null;
+    }
 }
