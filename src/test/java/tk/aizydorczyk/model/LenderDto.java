@@ -1,14 +1,18 @@
 package tk.aizydorczyk.model;
 
+import lombok.Builder;
+import lombok.Data;
 import tk.aizydorczyk.common.annotation.ExcelColumn;
 import tk.aizydorczyk.common.annotation.ExcelGroup;
 
-@ExcelGroup
+@ExcelGroup(header = "Lender")
+@Data
+@Builder
 public class LenderDto {
-    @ExcelColumn
+    @ExcelColumn(header = "LENDER_ID")
     private Long id;
-    @ExcelColumn
+    @ExcelColumn(header = "LENDER_FIRST_NAME")
     private String firstName;
-    @ExcelColumn
+    @ExcelColumn(header = "LENDER_LAST_NAME")
     private String lastName;
 }

@@ -1,23 +1,27 @@
 package tk.aizydorczyk.model;
 
+import lombok.Builder;
+import lombok.Data;
 import tk.aizydorczyk.common.annotation.ExcelColumn;
 import tk.aizydorczyk.common.annotation.ExcelGroup;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@ExcelGroup
+@ExcelGroup(header = "Book")
+@Data
+@Builder
 public class BookDto {
 
-    @ExcelColumn
+    @ExcelColumn(header = "BOOK_ID")
     private Long id;
-    @ExcelColumn
+    @ExcelColumn(header = "BOOK_NAME")
     private String name;
-    @ExcelColumn
+    @ExcelColumn(header = "RELEASE_DATE")
     private LocalDate releaseDate;
-    @ExcelColumn(complex = true)
+    @ExcelColumn(header = "Author", complex = true)
     private AuthorDto author;
-    @ExcelColumn(complex = true)
+    @ExcelColumn(header = "Lender", complex = true)
     private List<LenderDto> lenders;
 
 }
