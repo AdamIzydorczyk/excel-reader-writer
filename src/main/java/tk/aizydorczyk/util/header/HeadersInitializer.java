@@ -85,6 +85,7 @@ public class HeadersInitializer {
         bottomHeader.setHeaderName(excelColumnAnnotation.header());
         bottomHeader.setUpperHeader(upperHeader);
         upperHeader.getBottomHeaders().add(bottomHeader);
+        bottomHeader.setCells(new ArrayList<>());
         headers.add(bottomHeader);
     }
 

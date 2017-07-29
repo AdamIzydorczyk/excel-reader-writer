@@ -16,6 +16,26 @@ public class Header {
     private List<Cell> cells;
 
     public boolean isMainHeader(){
-        return upperHeader == null;
+        return this.upperHeader == null;
     }
+
+    public boolean isOverData(){
+        return this.cells != null;
+    }
+
+    public boolean notOverData(){
+        return this.cells == null;
+    }
+
+    public Long getWidth(){
+        if(isOverData()){
+            return 1L;
+        } else {
+            return bottomHeaders
+                    .stream()
+                    .mapToLong(Header::getWidth)
+                    .sum();
+        }
+    }
+
 }
