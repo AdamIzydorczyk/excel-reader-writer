@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class HeadersInitializer {
@@ -61,22 +62,20 @@ public class HeadersInitializer {
 		Header bottomHeader = new Header();
 		ExcelColumn excelColumnAnnotation = field.getAnnotation(ExcelColumn.class);
 
-		if (excelColumnAnnotation.complex()) {
-			createHeaderForComplexType(field, upperHeader);
+		classifyField(field, upperHeader, bottomHeader, excelColumnAnnotation);
+	}
+
+	private void classifyField(Field field, Header upperHeader, Header bottomHeader, ExcelColumn excelColumnAnnotation) {
+		if (Collection.class.isAssignableFrom(field.getType())) {
+			createHeaderForCollection(field, upperHeader);
+		} else if(field.getType().getAnnotation(ExcelGroup.class) != null) {
+			createHeadersByClass(field.getType(), upperHeader);
 		} else {
 			createHeaderForSimpleType(upperHeader, bottomHeader, excelColumnAnnotation);
 		}
 	}
 
-	private void createHeaderForComplexType(Field field, Header upperHeader) {
-		if (List.class.getName().equals(field.getType().getName())) {
-			createHeaderForList(field, upperHeader);
-		} else {
-			createHeadersByClass(field.getType(), upperHeader);
-		}
-	}
-
-	private void createHeaderForList(Field field, Header upperHeader) {
+	private void createHeaderForCollection(Field field, Header upperHeader) {
 		Class<?> genericType = getListGenericType(field.getGenericType());
 		createHeadersByClass(genericType, upperHeader);
 	}
