@@ -19,9 +19,9 @@ public class BookDto {
 	private String name;
 	@ExcelColumn(header = "RELEASE_DATE")
 	private LocalDate releaseDate;
-	@ExcelColumn(header = "Author", complex = true)
+	@ExcelColumn(header = "Author")
 	private AuthorDto author;
-	@ExcelColumn(header = "Lender", complex = true)
+	@ExcelColumn(header = "Lender")
 	private List<LenderDto> lenders;
 
 }
