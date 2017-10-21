@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 public class HeadersInitializer {
 
 	private List<Header> headers;
@@ -38,7 +40,7 @@ public class HeadersInitializer {
 	private void createHeadersByClass(Class<?> aClass, Header upperHeader) {
 		Header topHeader = createTopHeader(aClass);
 
-		if (upperHeader != null) {
+		if (nonNull(upperHeader)) {
 			topHeader.setUpperHeader(upperHeader);
 			upperHeader.getBottomHeaders().add(topHeader);
 		}
@@ -68,7 +70,7 @@ public class HeadersInitializer {
 	private void classifyField(Field field, Header upperHeader, Header bottomHeader, ExcelColumn excelColumnAnnotation) {
 		if (Collection.class.isAssignableFrom(field.getType())) {
 			createHeaderForCollection(field, upperHeader);
-		} else if(field.getType().getAnnotation(ExcelGroup.class) != null) {
+		} else if (nonNull(field.getType().getAnnotation(ExcelGroup.class))) {
 			createHeadersByClass(field.getType(), upperHeader);
 		} else {
 			createHeaderForSimpleType(upperHeader, bottomHeader, excelColumnAnnotation);

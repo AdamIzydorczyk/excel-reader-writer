@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
+
 public class HeadersCoordinatesCalculator {
 	public List<Header> calculate(List<Header> headers) {
 		setColumnPositions(headers);
@@ -42,7 +44,7 @@ public class HeadersCoordinatesCalculator {
 
 	private void setStartAndEndColumnPositions(List<Header> notOverDataHeaders) {
 		for (Header header : notOverDataHeaders) {
-			if(header.getStartColumnPosition() == null){
+			if (isNull(header.getStartColumnPosition())) {
 				setStartColumnPositions(header);
 			}
 			setEndColumnPosition(header);
@@ -54,7 +56,7 @@ public class HeadersCoordinatesCalculator {
 
 		Header firstBottomHeader = header.getBottomHeaders().get(0);
 
-		if (firstBottomHeader.getStartColumnPosition() == null){
+		if (isNull(firstBottomHeader.getStartColumnPosition())) {
 			setStartColumnPositions(firstBottomHeader);
 			header.setStartColumnPosition(firstBottomHeader.getStartColumnPosition());
 		} else {
@@ -80,11 +82,11 @@ public class HeadersCoordinatesCalculator {
 	private void setBottomRowsPosition(Header header) {
 		for (Header bottomHeader : header.getBottomHeaders()) {
 
-			if (header.getRowPosition() == null){
+			if (isNull(header.getRowPosition())) {
 				header.setRowPosition(0L);
 			}
 
-		   bottomHeader.setRowPosition(header.getRowPosition() + 1);
+			bottomHeader.setRowPosition(header.getRowPosition() + 1);
 			setBottomRowsPosition(bottomHeader);
 		}
 	}
@@ -98,7 +100,7 @@ public class HeadersCoordinatesCalculator {
 		return mainHeaderOptional.orElseThrow(NoCorrectMainHeader::new);
 	}
 
-	private class NoCorrectMainHeader extends RuntimeException{
+	private class NoCorrectMainHeader extends RuntimeException {
 	}
 
 }
