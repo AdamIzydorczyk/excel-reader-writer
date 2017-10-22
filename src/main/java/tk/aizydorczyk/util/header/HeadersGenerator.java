@@ -1,5 +1,6 @@
 package tk.aizydorczyk.util.header;
 
+import tk.aizydorczyk.model.DataBlock;
 import tk.aizydorczyk.model.Header;
 
 import java.util.List;
@@ -10,15 +11,18 @@ public class HeadersGenerator {
 
 	private HeadersCoordinatesCalculator headersCoordinatesCalculator;
 
+	private DataBlockCreator dataBlockCreator;
+
 	private HeadersGenerator(List<?> objects) {
 		this.headersInitializer = HeadersInitializer.ofAnnotatedObjects(objects);
 		this.headersCoordinatesCalculator = new HeadersCoordinatesCalculator();
+		this.dataBlockCreator = new DataBlockCreator(objects);
 	}
 
-	public List<Header> generate(List<?> objects) {
+	public List<DataBlock> generate() {
 		List<Header> initializedHeaders = headersInitializer.initialize();
 		List<Header> calculatedHeaders = headersCoordinatesCalculator.calculate(initializedHeaders);
-		return calculatedHeaders;
+		return dataBlockCreator.generate(calculatedHeaders);
 	}
 
 	public static HeadersGenerator ofAnnotatedObjects(List<?> objects) {

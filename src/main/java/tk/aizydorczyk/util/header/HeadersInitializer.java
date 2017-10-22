@@ -33,11 +33,11 @@ public class HeadersInitializer {
 			throw new HeadersInitializer.NoData();
 		}
 
-		createHeadersByClass(objects.get(0).getClass(), null);
+		createHeaderByClass(objects.get(0).getClass(), null);
 		return headers;
 	}
 
-	private void createHeadersByClass(Class<?> aClass, Header upperHeader) {
+	private Header createHeaderByClass(Class<?> aClass, Header upperHeader) {
 		Header topHeader = createTopHeader(aClass);
 
 		if (nonNull(upperHeader)) {
@@ -51,6 +51,8 @@ public class HeadersInitializer {
 		for (Field field : fields) {
 			generateBottomHeaders(field, topHeader);
 		}
+
+		return topHeader;
 	}
 
 	private Header createTopHeader(Class<?> aClass) {
@@ -63,36 +65,40 @@ public class HeadersInitializer {
 	private void generateBottomHeaders(Field field, Header upperHeader) {
 		Header bottomHeader = new Header();
 		ExcelColumn excelColumnAnnotation = field.getAnnotation(ExcelColumn.class);
-
 		classifyField(field, upperHeader, bottomHeader, excelColumnAnnotation);
 	}
 
 	private void classifyField(Field field, Header upperHeader, Header bottomHeader, ExcelColumn excelColumnAnnotation) {
-		if (Collection.class.isAssignableFrom(field.getType())) {
-			createHeaderForCollection(field, upperHeader);
+		if (isCollection(field)) {
+			createHeaderForCollection(field, upperHeader)
+					.setOverCollection(true);
 		} else if (nonNull(field.getType().getAnnotation(ExcelGroup.class))) {
-			createHeadersByClass(field.getType(), upperHeader);
+			createHeaderByClass(field.getType(), upperHeader);
 		} else {
-			createHeaderForSimpleType(upperHeader, bottomHeader, excelColumnAnnotation);
+			createHeaderOverData(upperHeader, bottomHeader, excelColumnAnnotation);
 		}
 	}
 
-	private void createHeaderForCollection(Field field, Header upperHeader) {
+	private Header createHeaderForCollection(Field field, Header upperHeader) {
 		Class<?> genericType = getListGenericType(field.getGenericType());
-		createHeadersByClass(genericType, upperHeader);
+		return createHeaderByClass(genericType, upperHeader);
 	}
 
-	private void createHeaderForSimpleType(Header upperHeader, Header bottomHeader, ExcelColumn excelColumnAnnotation) {
+	private void createHeaderOverData(Header upperHeader, Header bottomHeader, ExcelColumn excelColumnAnnotation) {
 		bottomHeader.setHeaderName(excelColumnAnnotation.header());
 		bottomHeader.setUpperHeader(upperHeader);
 		upperHeader.getBottomHeaders().add(bottomHeader);
-		bottomHeader.setCells(new ArrayList<>());
+		bottomHeader.setOverData(true);
 		headers.add(bottomHeader);
 	}
 
 	private Class<?> getListGenericType(Type genericType) {
 		ParameterizedType parameterizedType = (ParameterizedType) genericType;
 		return (Class<?>) parameterizedType.getActualTypeArguments()[0];
+	}
+
+	private boolean isCollection(Field field) {
+		return Collection.class.isAssignableFrom(field.getType());
 	}
 
 	private class NoData extends RuntimeException {
