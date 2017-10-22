@@ -4,9 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import tk.aizydorczyk.model.AuthorDto;
 import tk.aizydorczyk.model.BookDto;
+import tk.aizydorczyk.model.DataBlock;
 import tk.aizydorczyk.model.Header;
 import tk.aizydorczyk.model.LenderDto;
 import tk.aizydorczyk.util.header.HeadersCoordinatesCalculator;
+import tk.aizydorczyk.util.header.HeadersGenerator;
 import tk.aizydorczyk.util.header.HeadersInitializer;
 
 import java.time.LocalDate;
@@ -146,6 +148,12 @@ public class ExcelWriterTest {
 		assertEquals(Long.valueOf(2), lenderLastName.getRowPosition());
 		assertEquals(Long.valueOf(8), lenderLastName.getStartColumnPosition());
 		assertEquals(Long.valueOf(8), lenderLastName.getEndColumnPosition());
+	}
+
+	@Test
+	public void test(){
+		HeadersGenerator headersGenerator = HeadersGenerator.ofAnnotatedObjects(exampleDtos);
+		List<DataBlock> generate = headersGenerator.generate();
 	}
 
 }
