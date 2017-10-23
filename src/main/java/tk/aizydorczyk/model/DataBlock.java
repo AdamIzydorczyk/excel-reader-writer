@@ -12,7 +12,7 @@ import java.util.Map;
 @NoArgsConstructor
 public class DataBlock {
 	private Header header;
-	private Map<String, List<DataBlock>> dataBlockMap = new HashMap<>();
+	private Map<String, List<DataBlock>> internalBlocks = new HashMap<>();
 	private List<Cell> cells = new ArrayList<>();
 
 	public DataBlock(Header header, List<Cell> cells) {
