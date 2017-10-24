@@ -14,7 +14,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tk.aizydorczyk.enums.Messages.*;
+import static tk.aizydorczyk.enums.Messages.LACK_OF_MAIN_HEADER;
+import static tk.aizydorczyk.enums.Messages.MORE_FIELDS_THAN_HEADERS;
+import static tk.aizydorczyk.enums.Messages.MORE_HEADERS_THAN_FIELDS;
+import static tk.aizydorczyk.enums.Messages.NO_VALID_TYPE;
 
 
 public class DataBlockCreator {
@@ -32,11 +35,11 @@ public class DataBlockCreator {
 				.orElseThrow(() -> new DataBlockCreateFail(LACK_OF_MAIN_HEADER));
 
 		return objects.stream()
-				.map(o -> mapToDataBlocks(o, mainHeader))
+				.map(o -> mapToDataBlock(o, mainHeader))
 				.collect(Collectors.toList());
 	}
 
-	private DataBlock mapToDataBlocks(Object o, Header mainHeader) {
+	private DataBlock mapToDataBlock(Object o, Header mainHeader) {
 		DataBlock dataBlock = createDataBlock(o, mainHeader.getBottomHeaders());
 		dataBlock.setHeader(mainHeader);
 		return dataBlock;
@@ -68,7 +71,7 @@ public class DataBlockCreator {
 			case MULTIPLE_FROM_COMPLEX_OBJECT:
 				return getMultipleDataBlocksFromComplexObject(field, object, header);
 			default:
-				throw new DataBlockCreateFail(Messages.NO_VALID_TYPE);
+				throw new DataBlockCreateFail(NO_VALID_TYPE);
 		}
 	}
 
