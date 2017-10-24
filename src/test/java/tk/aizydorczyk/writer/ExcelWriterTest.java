@@ -4,8 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import tk.aizydorczyk.model.AuthorDto;
 import tk.aizydorczyk.model.BookDto;
+import tk.aizydorczyk.model.DataBlock;
 import tk.aizydorczyk.model.Header;
 import tk.aizydorczyk.model.LenderDto;
+import tk.aizydorczyk.util.header.DataBlockCreator;
 import tk.aizydorczyk.util.header.HeadersCoordinatesCalculator;
 import tk.aizydorczyk.util.header.HeadersInitializer;
 
@@ -80,24 +82,20 @@ public class ExcelWriterTest {
 
 	@Test
 	public void shouldCalculateHeadersCoordinates() {
-		HeadersInitializer headersInitializer = HeadersInitializer.ofAnnotatedObjects(exampleDtos);
-		List<Header> headers = headersInitializer.initialize();
-		HeadersCoordinatesCalculator headersCoordinatesCalculator = new HeadersCoordinatesCalculator();
+		List<Header> calculatedHeaders = initializeCalculatedHeaders();
 
-		List<Header> calculate = headersCoordinatesCalculator.calculate(headers);
-
-		Header book = calculate.get(0);
-		Header bookId = calculate.get(1);
-		Header bookName = calculate.get(2);
-		Header releaseDate = calculate.get(3);
-		Header author = calculate.get(4);
-		Header authorId = calculate.get(5);
-		Header authorFirstName = calculate.get(6);
-		Header authorLastName = calculate.get(7);
-		Header lender = calculate.get(8);
-		Header lenderId = calculate.get(9);
-		Header lenderFirstName = calculate.get(10);
-		Header lenderLastName = calculate.get(11);
+		Header book = calculatedHeaders.get(0);
+		Header bookId = calculatedHeaders.get(1);
+		Header bookName = calculatedHeaders.get(2);
+		Header releaseDate = calculatedHeaders.get(3);
+		Header author = calculatedHeaders.get(4);
+		Header authorId = calculatedHeaders.get(5);
+		Header authorFirstName = calculatedHeaders.get(6);
+		Header authorLastName = calculatedHeaders.get(7);
+		Header lender = calculatedHeaders.get(8);
+		Header lenderId = calculatedHeaders.get(9);
+		Header lenderFirstName = calculatedHeaders.get(10);
+		Header lenderLastName = calculatedHeaders.get(11);
 
 		assertEquals(Long.valueOf(0), book.getRowPosition());
 		assertEquals(Long.valueOf(0), book.getStartColumnPosition());
@@ -146,6 +144,28 @@ public class ExcelWriterTest {
 		assertEquals(Long.valueOf(2), lenderLastName.getRowPosition());
 		assertEquals(Long.valueOf(8), lenderLastName.getStartColumnPosition());
 		assertEquals(Long.valueOf(8), lenderLastName.getEndColumnPosition());
+	}
+
+	private List<Header> initializeCalculatedHeaders() {
+		HeadersInitializer headersInitializer = HeadersInitializer.ofAnnotatedObjects(exampleDtos);
+		List<Header> headers = headersInitializer.initialize();
+		HeadersCoordinatesCalculator headersCoordinatesCalculator = new HeadersCoordinatesCalculator();
+
+		return headersCoordinatesCalculator.calculate(headers);
+	}
+
+	@Test
+	public void shouldGenerate2DataBlocks() {
+		List<DataBlock> dataBlocks = initializeDataBlocks();
+		assertEquals(2L, dataBlocks.size());
+		assertEquals(5L, dataBlocks.get(0).getInternalBlocks().size());
+		assertEquals(5L, dataBlocks.get(1).getInternalBlocks().size());
+	}
+
+	private List<DataBlock> initializeDataBlocks() {
+		List<Header> calculatedHeaders = initializeCalculatedHeaders();
+		DataBlockCreator dataBlockCreator = new DataBlockCreator(exampleDtos);
+		return dataBlockCreator.generate(calculatedHeaders);
 	}
 
 }

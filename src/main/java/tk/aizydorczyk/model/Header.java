@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Data
 public class Header {
@@ -16,18 +15,15 @@ public class Header {
 	private Long endColumnPosition;
 	private Header upperHeader;
 	private List<Header> bottomHeaders = new ArrayList<>();
-	private List<Cell> cells;
+	private boolean overData;
+	private boolean overCollection;
 
 	public boolean isMainHeader() {
 		return isNull(this.upperHeader);
 	}
 
-	public boolean isOverData() {
-		return nonNull(this.cells);
-	}
-
 	public boolean notOverData() {
-		return isNull(this.cells);
+		return !overData;
 	}
 
 	public Long getWidth() {
@@ -41,4 +37,10 @@ public class Header {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Header{" +
+				"headerName='" + headerName + '\'' +
+				'}';
+	}
 }

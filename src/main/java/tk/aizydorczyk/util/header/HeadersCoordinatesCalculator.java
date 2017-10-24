@@ -1,5 +1,6 @@
 package tk.aizydorczyk.util.header;
 
+import tk.aizydorczyk.enums.Messages;
 import tk.aizydorczyk.model.Header;
 
 import java.util.List;
@@ -97,10 +98,14 @@ public class HeadersCoordinatesCalculator {
 				.filter(Header::isMainHeader)
 				.findFirst();
 
-		return mainHeaderOptional.orElseThrow(NoCorrectMainHeader::new);
+		return mainHeaderOptional
+				.orElseThrow(() -> new CoordinatesCalculateFail(Messages.LACK_OF_MAIN_HEADER));
 	}
 
-	private class NoCorrectMainHeader extends RuntimeException {
+	private class CoordinatesCalculateFail extends RuntimeException {
+		public CoordinatesCalculateFail(Messages message) {
+			super(message.getMessage());
+		}
 	}
 
 }
