@@ -1,6 +1,7 @@
 package tk.aizydorczyk.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 @Data
+@EqualsAndHashCode(exclude = "bottomHeaders")
 public class Header {
 	private String headerName;
 	private Long rowPosition;

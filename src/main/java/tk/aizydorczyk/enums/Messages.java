@@ -8,9 +8,12 @@ import lombok.Getter;
 public enum Messages {
 	MORE_FIELDS_THAN_HEADERS("More fields than headers"),
 	MORE_HEADERS_THAN_FIELDS("More headers than fields"),
-	LACK_OF_MAIN_HEADER("Lack of main header"),
-	NO_VALID_TYPE("No valid type");
+	NO_MAIN_HEADER("No main header"),
+	NO_VALID_TYPE("No valid type"),
+	NO_DATA("No data to export"),
+	NO_ANNOTATION("Unannotated field or class"),
+	NO_BOTTOM_HEADERS("No bottom headers");
 
-	private String message;
+	private final String message;
 
 }
