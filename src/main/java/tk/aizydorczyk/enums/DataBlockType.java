@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import tk.aizydorczyk.model.Header;
 
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 @AllArgsConstructor
@@ -19,8 +20,15 @@ public enum DataBlockType {
 
 	public static DataBlockType getTypeByHeader(Header header) {
 		return Stream.of(DataBlockType.values())
-				.filter(type -> type.isOverCollection() == header.isOverCollection() && type.isOverData() == header.isOverData())
+				.filter(dataBlockClassify(header))
 				.findFirst().orElseThrow(IllegalArgumentException::new);
 	}
+
+	private static Predicate<DataBlockType> dataBlockClassify(Header header) {
+		return type ->
+				type.isOverCollection() == header.isOverCollection()
+						&& type.isOverData() == header.isOverData();
+	}
+
 
 }

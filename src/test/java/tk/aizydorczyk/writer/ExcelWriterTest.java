@@ -7,9 +7,9 @@ import tk.aizydorczyk.model.BookDto;
 import tk.aizydorczyk.model.DataBlock;
 import tk.aizydorczyk.model.Header;
 import tk.aizydorczyk.model.LenderDto;
-import tk.aizydorczyk.util.header.DataBlockCreator;
-import tk.aizydorczyk.util.header.HeadersCoordinatesCalculator;
-import tk.aizydorczyk.util.header.HeadersInitializer;
+import tk.aizydorczyk.processor.datablock.DataBlockCreator;
+import tk.aizydorczyk.processor.header.HeadersCoordinatesCalculator;
+import tk.aizydorczyk.processor.header.HeadersInitializer;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -63,7 +63,6 @@ public class ExcelWriterTest {
 	public void shouldInitialize12Headers() {
 		HeadersInitializer headersInitializer = HeadersInitializer.ofAnnotatedObjects(exampleDtos);
 		List<Header> headers = headersInitializer.initialize();
-
 		assertEquals(12L, headers.size());
 	}
 
@@ -158,8 +157,8 @@ public class ExcelWriterTest {
 	public void shouldGenerate2DataBlocks() {
 		List<DataBlock> dataBlocks = initializeDataBlocks();
 		assertEquals(2L, dataBlocks.size());
-		assertEquals(5L, dataBlocks.get(0).getInternalBlocks().size());
-		assertEquals(5L, dataBlocks.get(1).getInternalBlocks().size());
+		assertEquals(6L, dataBlocks.get(0).getInternalBlocks().size());
+		assertEquals(7L, dataBlocks.get(1).getInternalBlocks().size());
 	}
 
 	private List<DataBlock> initializeDataBlocks() {
