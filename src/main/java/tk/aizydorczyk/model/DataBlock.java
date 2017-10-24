@@ -19,4 +19,11 @@ public class DataBlock {
 		this.header = header;
 		this.cells = cells;
 	}
+
+	@Override
+	public String toString() {
+		return "DataBlock{" +
+				"header=" + header +
+				'}';
+	}
 }

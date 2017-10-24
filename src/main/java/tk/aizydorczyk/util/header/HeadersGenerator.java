@@ -19,10 +19,10 @@ public class HeadersGenerator {
 		this.dataBlockCreator = new DataBlockCreator(objects);
 	}
 
-	public List<DataBlock> generate() {
+	public void generate() {
 		List<Header> initializedHeaders = headersInitializer.initialize();
 		List<Header> calculatedHeaders = headersCoordinatesCalculator.calculate(initializedHeaders);
-		return dataBlockCreator.generate(calculatedHeaders);
+		List<DataBlock> dataBlocks = dataBlockCreator.generate(calculatedHeaders);
 	}
 
 	public static HeadersGenerator ofAnnotatedObjects(List<?> objects) {

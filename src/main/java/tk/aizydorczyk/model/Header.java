@@ -37,4 +37,10 @@ public class Header {
 		}
 	}
 
+	@Override
+	public String toString() {
+		return "Header{" +
+				"headerName='" + headerName + '\'' +
+				'}';
+	}
 }
