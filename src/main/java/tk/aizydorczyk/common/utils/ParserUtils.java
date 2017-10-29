@@ -36,12 +36,22 @@ public class ParserUtils {
 	}
 
 	public static <T extends Annotation> T getAnnotationOrThrow(Class<?> annotatedClass, Class<T> annotationClass, Supplier exceptionSupplier) {
-		return (T) Optional.ofNullable(annotatedClass.getAnnotation(annotationClass)).orElseThrow(exceptionSupplier);
+		return (T) Optional.ofNullable(annotatedClass.getAnnotation(annotationClass))
+				.orElseThrow(exceptionSupplier);
 	}
 
 	public static <T extends Annotation> T getAnnotationOrThrow(Field field, Class<T> annotationClass, Supplier exceptionSupplier) {
-		return (T) Optional.ofNullable(field.getAnnotation(annotationClass)).orElseThrow(exceptionSupplier);
+		return (T) Optional.ofNullable(field.getAnnotation(annotationClass))
+				.orElseThrow(exceptionSupplier);
 	}
 
 
+	public static <T extends Throwable> Object getObjectFromFieldOrThrow(Field field, Object untypedObject, Supplier<T> exceptionSupplier) throws T {
+		try {
+			field.setAccessible(true);
+			return field.get(untypedObject);
+		} catch (IllegalAccessException e) {
+			throw exceptionSupplier.get();
+		}
+	}
 }
