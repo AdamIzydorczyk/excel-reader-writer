@@ -120,7 +120,7 @@ public class HeadersCoordinatesCalculator {
 		}
 	}
 
-	public Long getFirstDataRowPosition(List<Header> headers) {
+	private Long getFirstDataRowPosition(List<Header> headers) {
 		return headers.stream()
 				.filter(Header::isOverData)
 				.findAny()
