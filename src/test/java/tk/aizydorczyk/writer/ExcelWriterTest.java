@@ -7,6 +7,7 @@ import tk.aizydorczyk.model.BookDto;
 import tk.aizydorczyk.model.DataBlock;
 import tk.aizydorczyk.model.Header;
 import tk.aizydorczyk.model.LenderDto;
+import tk.aizydorczyk.processor.datablock.DataBlockCoordinatesCalculator;
 import tk.aizydorczyk.processor.datablock.DataBlockCreator;
 import tk.aizydorczyk.processor.header.HeadersCoordinatesCalculator;
 import tk.aizydorczyk.processor.header.HeadersInitializer;
@@ -100,15 +101,15 @@ public class ExcelWriterTest {
 		assertEquals(Long.valueOf(0), book.getStartColumnPosition());
 		assertEquals(Long.valueOf(8), book.getEndColumnPosition());
 
-		assertEquals(Long.valueOf(1), bookId.getRowPosition());
+		assertEquals(Long.valueOf(2), bookId.getRowPosition());
 		assertEquals(Long.valueOf(0), bookId.getStartColumnPosition());
 		assertEquals(Long.valueOf(0), bookId.getEndColumnPosition());
 
-		assertEquals(Long.valueOf(1), bookName.getRowPosition());
+		assertEquals(Long.valueOf(2), bookName.getRowPosition());
 		assertEquals(Long.valueOf(1), bookName.getStartColumnPosition());
 		assertEquals(Long.valueOf(1), bookName.getEndColumnPosition());
 
-		assertEquals(Long.valueOf(1), releaseDate.getRowPosition());
+		assertEquals(Long.valueOf(2), releaseDate.getRowPosition());
 		assertEquals(Long.valueOf(2), releaseDate.getStartColumnPosition());
 		assertEquals(Long.valueOf(2), releaseDate.getEndColumnPosition());
 
@@ -165,6 +166,19 @@ public class ExcelWriterTest {
 		List<Header> calculatedHeaders = initializeCalculatedHeaders();
 		DataBlockCreator dataBlockCreator = new DataBlockCreator(exampleDtos);
 		return dataBlockCreator.generate(calculatedHeaders);
+	}
+
+	@Test
+	public void test(){
+		HeadersInitializer headersInitializer = HeadersInitializer.ofAnnotatedObjects(exampleDtos);
+		List<Header> headers = headersInitializer.initialize();
+		HeadersCoordinatesCalculator headersCoordinatesCalculator = new HeadersCoordinatesCalculator();
+
+		List<Header> calculate = headersCoordinatesCalculator.calculate(headers);
+		DataBlockCreator dataBlockCreator = new DataBlockCreator(exampleDtos);
+		List<DataBlock> generate = dataBlockCreator.generate(calculate);
+		DataBlockCoordinatesCalculator dataBlockCoordinatesCalculator = new DataBlockCoordinatesCalculator();
+		dataBlockCoordinatesCalculator.calculate(generate, headersCoordinatesCalculator.getFirstDataRowPosition(calculate));
 	}
 
 }

@@ -2,7 +2,6 @@ package tk.aizydorczyk.processor.datablock;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import tk.aizydorczyk.common.annotation.ExcelColumn;
-import tk.aizydorczyk.enums.DataBlockType;
 import tk.aizydorczyk.enums.Messages;
 import tk.aizydorczyk.model.DataBlock;
 import tk.aizydorczyk.model.DataCell;
@@ -14,7 +13,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static tk.aizydorczyk.common.utils.ParserUtils.getObjectFromFieldOrThrow;
 import static tk.aizydorczyk.common.utils.ParserUtils.selectMainHeaderOrThrow;
+import static tk.aizydorczyk.enums.Messages.CANNOT_GET_VALUE_FROM_FIELD;
 import static tk.aizydorczyk.enums.Messages.MORE_FIELDS_THAN_HEADERS;
 import static tk.aizydorczyk.enums.Messages.MORE_HEADERS_THAN_FIELDS;
 import static tk.aizydorczyk.enums.Messages.NO_MAIN_HEADER;
@@ -60,7 +61,7 @@ public class DataBlockCreator {
 	}
 
 	private List<DataBlock> getListOfDataBlocks(Field field, Object untypedObject, Header header) {
-		switch (DataBlockType.getTypeByHeader(header)) {
+		switch (header.getDataBlockType()) {
 			case SINGLE_WITH_CELL:
 				return getSingleDataBlockWithCell(field, untypedObject, header);
 			case SINGLE_FROM_COMPLEX_OBJECT:
@@ -85,43 +86,36 @@ public class DataBlockCreator {
 	}
 
 	private List<DataBlock> getSingleDataBlockFromComplexObject(Field field, Object untypedObject, Header header) {
-		return Collections.singletonList(createDataBlock(getObjectFromField(field, untypedObject), header.getBottomHeaders()));
+		return Collections.singletonList(createDataBlock(
+				getObjectFromFieldOrThrow(field, untypedObject,
+						() -> new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD)),
+				header.getBottomHeaders()));
 	}
 
 	private List<DataBlock> getMultipleDataBlocksFromComplexObject(Field field, Object untypedObject, Header header) {
-		final Collection collection = (Collection) getObjectFromField(field, untypedObject);
+		final Collection collection = (Collection) getObjectFromFieldOrThrow(field, untypedObject,
+				() -> new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD));
 		return (List<DataBlock>) collection.stream()
 				.map(data -> createDataBlock(data, header.getBottomHeaders()))
 				.collect(Collectors.toList());
 	}
 
 	private List<DataBlock> getSingleDataBlockWithCell(Field field, Object untypedObject, Header header) {
-		final Object data = getObjectFromField(field, untypedObject);
+		final Object data = getObjectFromFieldOrThrow(field, untypedObject,
+				() -> new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD));
 		return Collections.singletonList(DataBlock.createWithHeaderAndCells(header, Collections.singletonList(DataCell.createWithUncastData(data))));
 	}
 
-	private List<DataBlock> getSingleDataBlockWithMultipleCells(Field field, Object object, Header header) {
-		final Collection collection = (Collection) getObjectFromField(field, object);
+	private List<DataBlock> getSingleDataBlockWithMultipleCells(Field field, Object untypedObject, Header header) {
+		final Collection collection = (Collection) getObjectFromFieldOrThrow(field, untypedObject,
+				() -> new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD));
 		final List<DataCell> cells = (List<DataCell>) collection.stream()
 				.map(DataCell::createWithUncastData)
 				.collect(Collectors.toList());
 		return Collections.singletonList(DataBlock.createWithHeaderAndCells(header, cells));
 	}
 
-	private Object getObjectFromField(Field field, Object untypedObject) {
-		try {
-			field.setAccessible(true);
-			return field.get(untypedObject);
-		} catch (IllegalAccessException e) {
-			throw new DataBlockCreateFail(e);
-		}
-	}
-
 	private class DataBlockCreateFail extends RuntimeException {
-		public DataBlockCreateFail(IllegalAccessException e) {
-			super(e);
-		}
-
 		public DataBlockCreateFail(Messages message) {
 			super(message.getMessage());
 		}

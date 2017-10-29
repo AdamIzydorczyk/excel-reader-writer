@@ -2,6 +2,7 @@ package tk.aizydorczyk.processor;
 
 import tk.aizydorczyk.model.DataBlock;
 import tk.aizydorczyk.model.Header;
+import tk.aizydorczyk.processor.datablock.DataBlockCoordinatesCalculator;
 import tk.aizydorczyk.processor.datablock.DataBlockCreator;
 import tk.aizydorczyk.processor.header.HeadersCoordinatesCalculator;
 import tk.aizydorczyk.processor.header.HeadersInitializer;
@@ -16,10 +17,13 @@ public class DataCellGenerator {
 
 	private final DataBlockCreator dataBlockCreator;
 
+	private final DataBlockCoordinatesCalculator dataBlockCoordinatesCalculator;
+
 	private DataCellGenerator(List<?> annotatedObjects) {
 		this.headersInitializer = HeadersInitializer.ofAnnotatedObjects(annotatedObjects);
 		this.headersCoordinatesCalculator = new HeadersCoordinatesCalculator();
 		this.dataBlockCreator = new DataBlockCreator(annotatedObjects);
+		this.dataBlockCoordinatesCalculator = new DataBlockCoordinatesCalculator();
 	}
 
 	public static DataCellGenerator ofAnnotatedObjects(List<?> objects) {
@@ -30,5 +34,6 @@ public class DataCellGenerator {
 		List<Header> initializedHeaders = headersInitializer.initialize();
 		List<Header> calculatedHeaders = headersCoordinatesCalculator.calculate(initializedHeaders);
 		List<DataBlock> dataBlocks = dataBlockCreator.generate(calculatedHeaders);
+		dataBlockCoordinatesCalculator.calculate(dataBlocks, headersCoordinatesCalculator.getFirstDataRowPosition(calculatedHeaders));
 	}
 }
