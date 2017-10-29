@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 @NoArgsConstructor
@@ -29,7 +30,7 @@ public class DataBlock {
 		this.internalBlocks.addAll(listOfDataBlocks);
 	}
 
-	public long getBlockHeight() {
+	public long getHeight() {
 		if (internalBlocks.isEmpty()) {
 			return cells.size();
 		} else {
@@ -39,11 +40,17 @@ public class DataBlock {
 					.stream()
 					.mapToLong(dataBlockGroup -> dataBlockGroup.getValue()
 							.stream()
-							.mapToLong(DataBlock::getBlockHeight)
+							.mapToLong(DataBlock::getHeight)
 							.sum())
 					.max()
 					.getAsLong();
 		}
+	}
+
+	public Stream<DataBlock> streamDataBlocks() {
+		return Stream.concat(
+				Stream.of(this),
+				internalBlocks.stream().flatMap(DataBlock::streamDataBlocks));
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package tk.aizydorczyk.processor.datablock;
 
+import lombok.Getter;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import tk.aizydorczyk.common.annotation.ExcelColumn;
 import tk.aizydorczyk.enums.Messages;
@@ -26,11 +27,19 @@ public class DataBlockCreator {
 
 	private final List<?> annotatedObjects;
 
-	public DataBlockCreator(List<?> annotatedObjects) {
+	@Getter
+	private final List<DataBlock> generatedDataBlocks;
+
+	private DataBlockCreator(List<?> annotatedObjects, List<Header> headers) {
 		this.annotatedObjects = annotatedObjects;
+		this.generatedDataBlocks = generate(headers);
 	}
 
-	public List<DataBlock> generate(List<Header> headers) {
+	public static DataBlockCreator ofAnnotatedObjectsAndHeaders(List<?> annotatedObjects, List<Header> headers) {
+		return new DataBlockCreator(annotatedObjects, headers);
+	}
+
+	private List<DataBlock> generate(List<Header> headers) {
 		final Header mainHeader = selectMainHeaderOrThrow(headers,
 				() -> new DataBlockCreateFail(NO_MAIN_HEADER));
 
