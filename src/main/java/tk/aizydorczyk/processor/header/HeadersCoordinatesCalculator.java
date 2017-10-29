@@ -1,5 +1,6 @@
 package tk.aizydorczyk.processor.header;
 
+import lombok.Getter;
 import tk.aizydorczyk.enums.Messages;
 import tk.aizydorczyk.model.Header;
 
@@ -13,8 +14,18 @@ import static tk.aizydorczyk.enums.Messages.NO_BOTTOM_HEADERS;
 import static tk.aizydorczyk.enums.Messages.NO_DATA_HEADERS;
 import static tk.aizydorczyk.enums.Messages.NO_MAIN_HEADER;
 
+@Getter
 public class HeadersCoordinatesCalculator {
-	public List<Header> calculate(List<Header> headers) {
+
+	private final List<Header> calculatedHeaders;
+	private final long firstDataRowPosition;
+
+	public HeadersCoordinatesCalculator(List<Header> headers) {
+		this.calculatedHeaders = calculate(headers);
+		this.firstDataRowPosition = getFirstDataRowPosition(headers);
+	}
+
+	private List<Header> calculate(List<Header> headers) {
 		calculateColumnPositions(headers);
 
 		final Header mainHeader = selectMainHeaderOrThrow(headers,
@@ -33,7 +44,7 @@ public class HeadersCoordinatesCalculator {
 	}
 
 	private void alignDataHeadersRowPosition(List<Header> headers) {
-		OptionalLong maxRowPosition = headers
+		final OptionalLong maxRowPosition = headers
 				.stream()
 				.filter(Header::isOverData)
 				.mapToLong(Header::getRowPosition)
