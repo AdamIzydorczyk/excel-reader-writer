@@ -6,6 +6,7 @@ import lombok.Data;
 public class DataCell {
 	private Object data;
 	private Long rowPosition;
+	private Header header;
 
 	private DataCell(Object data) {
 		this.data = data;

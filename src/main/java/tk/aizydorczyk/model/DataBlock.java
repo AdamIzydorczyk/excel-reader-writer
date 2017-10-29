@@ -4,9 +4,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Data
 @NoArgsConstructor
@@ -25,8 +25,32 @@ public class DataBlock {
 	}
 
 	public void addInternalBlocksWithHeader(Header header, List<DataBlock> listOfDataBlocks) {
-		listOfDataBlocks.forEach(dataBlock -> dataBlock.setHeader(header));
+		listOfDataBlocks.forEach(dataBlock ->
+				dataBlock.setHeader(header));
 		this.internalBlocks.addAll(listOfDataBlocks);
+	}
+
+	public long getHeight() {
+		if (internalBlocks.isEmpty()) {
+			return cells.size();
+		} else {
+			return internalBlocks.stream()
+					.collect(Collectors.groupingBy(DataBlock::getHeader))
+					.entrySet()
+					.stream()
+					.mapToLong(dataBlockGroup -> dataBlockGroup.getValue()
+							.stream()
+							.mapToLong(DataBlock::getHeight)
+							.sum())
+					.max()
+					.getAsLong();
+		}
+	}
+
+	public Stream<DataBlock> streamDataBlocks() {
+		return Stream.concat(
+				Stream.of(this),
+				internalBlocks.stream().flatMap(DataBlock::streamDataBlocks));
 	}
 
 	@Override

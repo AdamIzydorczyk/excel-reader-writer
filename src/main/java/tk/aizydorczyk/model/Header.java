@@ -2,6 +2,7 @@ package tk.aizydorczyk.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import tk.aizydorczyk.enums.DataBlockType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,10 @@ public class Header {
 					.mapToLong(Header::getWidth)
 					.sum();
 		}
+	}
+
+	public DataBlockType getDataBlockType() {
+		return DataBlockType.getTypeByHeader(this);
 	}
 
 	@Override

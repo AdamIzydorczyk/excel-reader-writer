@@ -1,15 +1,15 @@
 package tk.aizydorczyk.api;
 
-import tk.aizydorczyk.processor.DataCellGenerator;
+import tk.aizydorczyk.processor.ExcelCellsGenerator;
 
 import java.util.List;
 
 public class ExcelWriter {
 
-	private DataCellGenerator dataCellGenerator;
+	private ExcelCellsGenerator excelCellsGenerator;
 
 	private ExcelWriter(List<?> objects) {
-		this.dataCellGenerator = DataCellGenerator.ofAnnotatedObjects(objects);
+		this.excelCellsGenerator = ExcelCellsGenerator.ofAnnotatedObjects(objects);
 	}
 
 	public static ExcelWriter ofAnnotatedObjects(List<?> objects) {
