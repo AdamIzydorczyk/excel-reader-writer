@@ -12,7 +12,9 @@ public enum Messages {
 	NO_VALID_TYPE("No valid type"),
 	NO_DATA("No data to export"),
 	NO_ANNOTATION("Unannotated field or class"),
-	NO_BOTTOM_HEADERS("No bottom headers");
+	NO_BOTTOM_HEADERS("No bottom headers"),
+	NO_DATA_HEADERS("No data headers"),
+	CANNOT_GET_VALUE_FROM_FIELD("Cannot get value from field");
 
 	private final String message;
 
