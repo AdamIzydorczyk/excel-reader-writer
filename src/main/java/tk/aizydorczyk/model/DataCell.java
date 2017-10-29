@@ -15,6 +15,10 @@ public class DataCell {
 	public static DataCell createWithUncastData(Object data) {
 		return new DataCell(data);
 	}
+
+	public Long getColumnPosition(){
+		return this.getHeader().getStartColumnPosition();
+	}
 }
 
 
