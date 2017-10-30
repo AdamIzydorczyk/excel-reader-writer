@@ -14,7 +14,9 @@ public enum Messages {
 	NO_ANNOTATION("Unannotated field or class"),
 	NO_BOTTOM_HEADERS("No bottom headers"),
 	NO_DATA_HEADERS("No data headers"),
-	CANNOT_GET_VALUE_FROM_FIELD("Cannot get value from field");
+	CANNOT_GET_VALUE_FROM_FIELD("Cannot get value from field"),
+	WRONG_FILE_EXTENSION("Wrong file extension"),
+	FILE_CREATION_FAIL("File creation error");
 
 	private final String message;
 

@@ -1,4 +1,4 @@
-package tk.aizydorczyk.processor.header;
+package tk.aizydorczyk.writer.header;
 
 import lombok.Getter;
 import tk.aizydorczyk.enums.Messages;
@@ -99,7 +99,7 @@ public class HeadersCoordinatesCalculator {
 	}
 
 	private void calculateEndColumnPosition(Header header) {
-		final long endColumnPosition = header.getStartColumnPosition() + header.getWidth();
+		final long endColumnPosition = header.getStartColumnPosition() + header.getWidth() - 1L;
 		header.setEndColumnPosition(endColumnPosition);
 	}
 

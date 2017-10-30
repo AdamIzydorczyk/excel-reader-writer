@@ -2,14 +2,11 @@ package tk.aizydorczyk.writer;
 
 import org.junit.Before;
 import org.junit.Test;
-import tk.aizydorczyk.model.AuthorDto;
+import tk.aizydorczyk.data.TestData;
 import tk.aizydorczyk.model.BookDto;
 import tk.aizydorczyk.model.DataCell;
 import tk.aizydorczyk.model.Header;
-import tk.aizydorczyk.model.LenderDto;
-import tk.aizydorczyk.processor.ExcelCellsGenerator;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,44 +17,17 @@ import static org.junit.Assert.assertThat;
 
 public class ExcelCellsGeneratorTest {
 
-	final static String LENDER_TEST_FNAME_1 = "LENDER_TEST_FNAME_1";
-	final static String LENDER_TEST_FNAME_2 = "LENDER_TEST_FNAME_2";
-	final static String LENDER_TEST_FNAME_3 = "LENDER_TEST_FNAME_3";
-	final static String LENDER_TEST_FNAME_4 = "LENDER_TEST_FNAME_4";
-	final static String LENDER_TEST_FNAME_5 = "LENDER_TEST_FNAME_5";
-	final static String LENDER_TEST_LNAME_1 = "LENDER_TEST_LNAME_1";
-	final static String LENDER_TEST_LNAME_2 = "LENDER_TEST_LNAME_2";
-	final static String LENDER_TEST_LNAME_3 = "LENDER_TEST_LNAME_3";
-	final static String LENDER_TEST_LNAME_4 = "LENDER_TEST_LNAME_4";
-	final static String LENDER_TEST_LNAME_5 = "LENDER_TEST_LNAME_5";
-	final static String AUTHOR_TEST_FNAME_1 = "AUTHOR_TEST_FNAME_1";
-	final static String AUTHOR_TEST_FNAME_2 = "AUTHOR_TEST_FNAME_2";
-	final static String AUTHOR_TEST_LNAME_1 = "AUTHOR_TEST_LNAME_1";
-	final static String AUTHOR_TEST_LNAME_2 = "AUTHOR_TEST_LNAME_2";
-	final static String BOOK_TEST_NAME_1 = "BOOK_TEST_NAME_1";
-	final static String BOOK_TEST_NAME_2 = "BOOK_TEST_NAME_2";
 
-	private List<BookDto> exampleDtos;
 	private List<String> listOfExpectedHeadersNames;
 
 	private ExcelCellsGenerator excelCellsGenerator;
 
+	private static List<BookDto> exampleDtos;
+
 	@Before
 	public void init() {
-		LenderDto lender1 = LenderDto.builder().id(1L).firstName(LENDER_TEST_FNAME_1).lastName(LENDER_TEST_LNAME_1).build();
-		LenderDto lender2 = LenderDto.builder().id(2L).firstName(LENDER_TEST_FNAME_2).lastName(LENDER_TEST_LNAME_2).build();
-		AuthorDto author1 = AuthorDto.builder().id(1L).firstName(AUTHOR_TEST_FNAME_1).lastName(AUTHOR_TEST_LNAME_1).build();
-		BookDto book1 = BookDto.builder().id(1L).name(BOOK_TEST_NAME_1).releaseDate(LocalDate.now()).author(author1).lenders(Arrays.asList(lender1, lender2)).build();
-		LenderDto lender3 = LenderDto.builder().id(3L).firstName(LENDER_TEST_FNAME_3).lastName(LENDER_TEST_LNAME_3).build();
-		LenderDto lender4 = LenderDto.builder().id(4L).firstName(LENDER_TEST_FNAME_4).lastName(LENDER_TEST_LNAME_4).build();
-		LenderDto lender5 = LenderDto.builder().id(5L).firstName(LENDER_TEST_FNAME_5).lastName(LENDER_TEST_LNAME_5).build();
-		AuthorDto author2 = AuthorDto.builder().id(2L).firstName(AUTHOR_TEST_FNAME_2).lastName(AUTHOR_TEST_LNAME_2).build();
-		BookDto book2 = BookDto.builder().id(2L).name(BOOK_TEST_NAME_2).releaseDate(LocalDate.of(2010, 12, 12)).author(author2).lenders(Arrays.asList(lender3, lender4, lender5)).build();
-
-		exampleDtos = Arrays.asList(book1, book2);
-
+		exampleDtos = TestData.getExampleDtos();
 		listOfExpectedHeadersNames = Arrays.asList("Book", "BOOK_ID", "BOOK_NAME", "RELEASE_DATE", "Author", "AUTHOR_ID", "AUTHOR_FIRST_NAME", "AUTHOR_LAST_NAME", "Lender", "LENDER_ID", "LENDER_FIRST_NAME", "LENDER_LAST_NAME");
-
 		this.excelCellsGenerator = ExcelCellsGenerator.ofAnnotatedObjects(exampleDtos);
 	}
 
