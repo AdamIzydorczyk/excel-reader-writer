@@ -1,12 +1,12 @@
-package tk.aizydorczyk.processor;
+package tk.aizydorczyk.writer;
 
 import lombok.Getter;
 import tk.aizydorczyk.model.DataCell;
 import tk.aizydorczyk.model.Header;
-import tk.aizydorczyk.processor.datablock.DataBlockCreator;
-import tk.aizydorczyk.processor.datablock.DataCellCoordinatesCalculator;
-import tk.aizydorczyk.processor.header.HeadersCoordinatesCalculator;
-import tk.aizydorczyk.processor.header.HeadersInitializer;
+import tk.aizydorczyk.writer.datablock.DataBlockCreator;
+import tk.aizydorczyk.writer.datablock.DataCellCoordinatesCalculator;
+import tk.aizydorczyk.writer.header.HeadersCoordinatesCalculator;
+import tk.aizydorczyk.writer.header.HeadersInitializer;
 
 import java.util.List;
 

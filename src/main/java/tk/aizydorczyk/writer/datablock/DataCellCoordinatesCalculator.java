@@ -1,4 +1,4 @@
-package tk.aizydorczyk.processor.datablock;
+package tk.aizydorczyk.writer.datablock;
 
 import lombok.Getter;
 import tk.aizydorczyk.model.DataBlock;

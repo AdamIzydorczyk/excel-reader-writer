@@ -6,6 +6,7 @@ import tk.aizydorczyk.enums.DataBlockType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 
@@ -42,6 +43,12 @@ public class Header {
 
 	public DataBlockType getDataBlockType() {
 		return DataBlockType.getTypeByHeader(this);
+	}
+
+	public Stream<Header> streamHeaders() {
+		return Stream.concat(
+				Stream.of(this),
+				bottomHeaders.stream().flatMap(Header::streamHeaders));
 	}
 
 	@Override

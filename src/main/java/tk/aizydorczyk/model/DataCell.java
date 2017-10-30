@@ -16,9 +16,11 @@ public class DataCell {
 		return new DataCell(data);
 	}
 
-	public Long getColumnPosition(){
+	public Long getColumnPosition() {
 		return this.getHeader().getStartColumnPosition();
 	}
+
+
 }
 
 
