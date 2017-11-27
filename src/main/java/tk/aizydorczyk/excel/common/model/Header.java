@@ -41,10 +41,6 @@ public class Header {
 		}
 	}
 
-	public DataBlockType getDataBlockType() {
-		return DataBlockType.getTypeByHeader(this);
-	}
-
 	public Stream<Header> streamHeaders() {
 		return Stream.concat(
 				Stream.of(this),
