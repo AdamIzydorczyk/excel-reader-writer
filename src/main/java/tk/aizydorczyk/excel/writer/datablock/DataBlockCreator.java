@@ -2,24 +2,20 @@ package tk.aizydorczyk.excel.writer.datablock;
 
 import lombok.Getter;
 import tk.aizydorczyk.excel.common.annotation.ExcelColumn;
+import tk.aizydorczyk.excel.common.enums.DataBlockType;
 import tk.aizydorczyk.excel.common.enums.Messages;
 import tk.aizydorczyk.excel.common.model.DataBlock;
-import tk.aizydorczyk.excel.common.model.DataCell;
 import tk.aizydorczyk.excel.common.model.Header;
+import tk.aizydorczyk.excel.writer.datablock.creationstrategy.BlocksCreationDto;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static tk.aizydorczyk.excel.common.enums.Messages.CANNOT_GET_VALUE_FROM_FIELD;
 import static tk.aizydorczyk.excel.common.enums.Messages.MORE_FIELDS_THAN_HEADERS;
 import static tk.aizydorczyk.excel.common.enums.Messages.MORE_HEADERS_THAN_FIELDS;
 import static tk.aizydorczyk.excel.common.enums.Messages.NO_MAIN_HEADER;
-import static tk.aizydorczyk.excel.common.enums.Messages.NO_VALID_TYPE;
 import static tk.aizydorczyk.excel.common.utils.ParserUtils.getFieldsListWithAnnotation;
-import static tk.aizydorczyk.excel.common.utils.ParserUtils.getObjectFromFieldOrThrow;
 import static tk.aizydorczyk.excel.common.utils.ParserUtils.selectMainHeaderOrThrow;
 
 
@@ -71,18 +67,17 @@ public class DataBlockCreator {
 	}
 
 	private List<DataBlock> getListOfDataBlocks(Field field, Object untypedObject, Header header) {
-		switch (header.getDataBlockType()) {
-			case SINGLE_WITH_SINGLE_CELL:
-				return getSingleDataBlockWithSingleCell(field, untypedObject, header);
-			case SINGLE_FROM_COMPLEX_OBJECT:
-				return getSingleDataBlockFromComplexObject(field, untypedObject, header);
-			case SINGLE_WITH_MULTIPLE_CELLS:
-				return getSingleDataBlockWithMultipleCells(field, untypedObject, header);
-			case MULTIPLE_FROM_COMPLEX_OBJECT:
-				return getMultipleDataBlocksFromComplexObject(field, untypedObject, header);
-			default:
-				throw new DataBlockCreateFail(NO_VALID_TYPE);
-		}
+		final BlocksCreationDto creationDto = createBlockCreationDto(field, untypedObject, header);
+		return DataBlockType.getTypeByHeader(header)
+				.createBlocks(creationDto, this::createDataBlock);
+	}
+
+	private BlocksCreationDto createBlockCreationDto(Field field, Object untypedObject, Header header) {
+		return BlocksCreationDto.builder()
+				.field(field)
+				.untypedObject(untypedObject)
+				.header(header)
+				.build();
 	}
 
 	private void checkHeadersAndFieldsNumberEquality(Integer fieldsSize, Integer headersSize) {
@@ -95,64 +90,7 @@ public class DataBlockCreator {
 		}
 	}
 
-	private List<DataBlock> getSingleDataBlockFromComplexObject(Field field, Object untypedObject, Header header) {
-		final Optional<Object> optional = getObjectFromFieldOrThrow(field, untypedObject, () ->
-				new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD));
-
-		return optional.map(data ->
-				Collections.singletonList(createDataBlock(data, header.getBottomHeaders())))
-				.orElseGet(() ->
-						Collections.singletonList(createDataBlock(null, header.getBottomHeaders()))
-				);
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<DataBlock> getMultipleDataBlocksFromComplexObject(Field field, Object untypedObject, Header header) {
-		final Optional<Object> optional = getObjectFromFieldOrThrow(field, untypedObject, () ->
-				new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD));
-
-		return optional.map(collection ->
-				((List<Object>) collection).stream()
-						.map(data ->
-								createDataBlock(data, header.getBottomHeaders()))
-						.collect(Collectors.toList()))
-				.orElseGet(() ->
-						getDataBlockListWithOneBlockWithOneCellWithoutData(header));
-	}
-
-	private List<DataBlock> getDataBlockListWithOneBlockWithOneCellWithoutData(Header header) {
-		return Collections.singletonList(DataBlock.createWithHeaderAndCells(
-				header, Collections.singletonList(DataCell.createWithNotCastData(null))
-		));
-	}
-
-	private List<DataBlock> getSingleDataBlockWithSingleCell(Field field, Object untypedObject, Header header) {
-		final Optional<Object> optional = getObjectFromFieldOrThrow(field, untypedObject, () ->
-				new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD));
-
-		return Collections.singletonList(
-				DataBlock.createWithHeaderAndCells(
-						header, Collections.singletonList(DataCell.createWithNotCastData(optional.orElse(null)))
-				));
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<DataBlock> getSingleDataBlockWithMultipleCells(Field field, Object untypedObject, Header header) {
-		final Optional<Object> optional = getObjectFromFieldOrThrow(field, untypedObject, () ->
-				new DataBlockCreateFail(CANNOT_GET_VALUE_FROM_FIELD));
-
-		final List<DataCell> dataCells = optional.map(collection ->
-				((List<Object>) collection).stream()
-						.map(DataCell::createWithNotCastData)
-						.collect(Collectors.toList()))
-				.orElseGet(() ->
-						Collections.singletonList(DataCell.createWithNotCastData(null)));
-
-		return Collections.singletonList(
-				DataBlock.createWithHeaderAndCells(header, dataCells));
-	}
-
-	private class DataBlockCreateFail extends RuntimeException {
+	public static class DataBlockCreateFail extends RuntimeException {
 		public DataBlockCreateFail(Messages message) {
 			super(message.getMessage());
 		}
