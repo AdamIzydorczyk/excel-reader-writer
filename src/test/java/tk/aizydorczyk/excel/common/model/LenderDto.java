@@ -4,8 +4,9 @@ import lombok.Builder;
 import lombok.Data;
 import tk.aizydorczyk.excel.common.annotation.ExcelColumn;
 import tk.aizydorczyk.excel.common.annotation.ExcelGroup;
+import tk.aizydorczyk.excel.common.model.style.NonDataHeaderStyle;
 
-@ExcelGroup(header = "Lender")
+@ExcelGroup(header = "Lender", styleClass = NonDataHeaderStyle.class)
 @Data
 @Builder
 public class LenderDto {

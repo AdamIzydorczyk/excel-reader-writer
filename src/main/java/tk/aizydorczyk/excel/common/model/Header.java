@@ -2,7 +2,6 @@ package tk.aizydorczyk.excel.common.model;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import tk.aizydorczyk.excel.common.enums.DataBlockType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +20,7 @@ public class Header {
 	private List<Header> bottomHeaders = new ArrayList<>();
 	private boolean overData;
 	private boolean overCollection;
+	private Style style;
 
 	public boolean isMainHeader() {
 		return isNull(this.upperHeader);

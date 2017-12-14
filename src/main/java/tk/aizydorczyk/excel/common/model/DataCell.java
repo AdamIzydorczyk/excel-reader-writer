@@ -7,6 +7,7 @@ public class DataCell {
 	private Object data;
 	private int rowPosition = -1;
 	private Header header;
+	private Style style;
 
 	private DataCell(Object data) {
 		this.data = data;
