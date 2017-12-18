@@ -4,11 +4,12 @@ import lombok.Builder;
 import lombok.Data;
 import tk.aizydorczyk.excel.common.annotation.ExcelColumn;
 import tk.aizydorczyk.excel.common.annotation.ExcelGroup;
+import tk.aizydorczyk.excel.common.model.style.NonDataHeaderStyle;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@ExcelGroup(header = "Book")
+@ExcelGroup(header = "Book", styleClass = NonDataHeaderStyle.class)
 @Data
 @Builder
 public class BookDto {

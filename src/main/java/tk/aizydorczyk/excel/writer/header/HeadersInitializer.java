@@ -4,18 +4,25 @@ import tk.aizydorczyk.excel.common.annotation.ExcelColumn;
 import tk.aizydorczyk.excel.common.annotation.ExcelGroup;
 import tk.aizydorczyk.excel.common.enums.Messages;
 import tk.aizydorczyk.excel.common.model.Header;
+import tk.aizydorczyk.excel.common.model.Style;
+import tk.aizydorczyk.excel.common.style.ExcelStyle;
+import tk.aizydorczyk.excel.common.style.ExcelStyleConfigurator;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static tk.aizydorczyk.excel.common.enums.Messages.NO_ANNOTATION;
 import static tk.aizydorczyk.excel.common.enums.Messages.NO_DATA;
+import static tk.aizydorczyk.excel.common.enums.Messages.STYLE_INITIALIZATION_FAIL;
 import static tk.aizydorczyk.excel.common.utils.ParserUtils.getAnnotationOrThrow;
 import static tk.aizydorczyk.excel.common.utils.ParserUtils.getCollectionGenericType;
 import static tk.aizydorczyk.excel.common.utils.ParserUtils.getFieldsListWithAnnotation;
+import static tk.aizydorczyk.excel.common.utils.ParserUtils.getStyleClassFromAnnotation;
 import static tk.aizydorczyk.excel.common.utils.ParserUtils.isCollection;
 import static tk.aizydorczyk.excel.common.utils.ParserUtils.isComplexObject;
+import static tk.aizydorczyk.excel.common.utils.ParserUtils.notSpecifiedStyle;
 
 public class HeadersInitializer {
 
@@ -64,16 +71,35 @@ public class HeadersInitializer {
 	private Header createTopHeader(Class<?> complexObjectClass) {
 		final Header header = new Header();
 		final ExcelGroup annotation = getAnnotationOrThrow(complexObjectClass, ExcelGroup.class, () ->
-				new HeadersInitializationFail(Messages.NO_ANNOTATION));
+				new HeadersInitializationFail(NO_ANNOTATION));
 		header.setHeaderName(annotation.header());
-		// TODO: style collecting
+		header.setStyle(collectStyle(getStyleClassFromAnnotation(annotation)));
 		return header;
+	}
+
+	private Style collectStyle(Class<? extends ExcelStyle> styleClass) {
+		if (notSpecifiedStyle(styleClass)) {
+			return Style.DEFAULT_HEADER_STYLE;
+		} else {
+			final ExcelStyle excelStyle = instantiateStyle(styleClass);
+			final ExcelStyleConfigurator excelStyleConfigurator = new ExcelStyleConfigurator();
+			excelStyle.configureStyle(excelStyleConfigurator);
+			return excelStyleConfigurator.getStyle();
+		}
+	}
+
+	private ExcelStyle instantiateStyle(Class<? extends ExcelStyle> styleClass) {
+		try {
+			return styleClass.newInstance();
+		} catch (Exception e) {
+			throw new HeadersInitializationFail(STYLE_INITIALIZATION_FAIL, e);
+		}
 	}
 
 	private void generateBottomHeader(Field field, Header upperHeader) {
 		final Header bottomHeader = new Header();
 		final ExcelColumn excelColumnAnnotation = getAnnotationOrThrow(field, ExcelColumn.class, () ->
-				new HeadersInitializationFail(Messages.NO_ANNOTATION));
+				new HeadersInitializationFail(NO_ANNOTATION));
 		classifyField(field, upperHeader, bottomHeader, excelColumnAnnotation);
 	}
 
@@ -100,7 +126,7 @@ public class HeadersInitializer {
 
 	private Header createHeaderOverData(Header upperHeader, Header bottomHeader, ExcelColumn excelColumnAnnotation) {
 		bottomHeader.setHeaderName(excelColumnAnnotation.header());
-		// TODO: style collecting
+		bottomHeader.setStyle(collectStyle(getStyleClassFromAnnotation(excelColumnAnnotation)));
 		bottomHeader.setUpperHeader(upperHeader);
 		upperHeader.getBottomHeaders().add(bottomHeader);
 		bottomHeader.setOverData(true);
@@ -112,6 +138,10 @@ public class HeadersInitializer {
 	private class HeadersInitializationFail extends RuntimeException {
 		public HeadersInitializationFail(Messages message) {
 			super(message.getMessage());
+		}
+
+		public HeadersInitializationFail(Messages messages, Exception e) {
+			super(messages.getMessage(), e);
 		}
 	}
 }

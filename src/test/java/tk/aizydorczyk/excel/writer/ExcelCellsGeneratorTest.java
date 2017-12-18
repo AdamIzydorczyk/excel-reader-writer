@@ -149,7 +149,7 @@ public class ExcelCellsGeneratorTest {
 	}
 
 	@Test
-	public void shouldGenerate27DataCells() {
+	public void shouldGenerate34DataCells() {
 		List<DataCell> dataCells = excelCellsGenerator.getDataCells();
 		assertEquals(34, dataCells.size());
 	}

@@ -1,7 +1,9 @@
 package tk.aizydorczyk.excel.common.utils;
 
+import tk.aizydorczyk.excel.common.annotation.ExcelColumn;
 import tk.aizydorczyk.excel.common.annotation.ExcelGroup;
 import tk.aizydorczyk.excel.common.model.Header;
+import tk.aizydorczyk.excel.common.style.ExcelStyle;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -9,7 +11,6 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -124,5 +125,21 @@ public class ParserUtils {
 			int lastWindowsPos = filename.lastIndexOf(92);
 			return Math.max(lastUnixPos, lastWindowsPos);
 		}
+	}
+
+	public static Class<? extends ExcelStyle> getStyleClassFromAnnotation(ExcelGroup annotation) {
+		return annotation.styleClass();
+	}
+
+	public static Class<? extends ExcelStyle> getStyleClassFromAnnotation(ExcelColumn annotation) {
+		return annotation.styleClass();
+	}
+
+	public static boolean notSpecifiedStyle(Class<? extends ExcelStyle> styleClass) {
+		return ExcelStyle.class.equals(styleClass);
+	}
+
+	public static <T> T orDefaultParameter(T param, T defaultParam) {
+		return Optional.ofNullable(param).orElse(defaultParam);
 	}
 }
