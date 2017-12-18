@@ -1,6 +1,5 @@
 package tk.aizydorczyk.excel.writer;
 
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -8,7 +7,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import tk.aizydorczyk.excel.api.ExcelWriter;
+import tk.aizydorczyk.excel.api.SpreadSheetWriter;
 import tk.aizydorczyk.excel.common.model.BookDto;
 import tk.aizydorczyk.excel.data.TestData;
 
@@ -21,14 +20,15 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static tk.aizydorczyk.excel.common.utility.ExceptionHelper.getOrRethrowException;
 
-public class ExcelWriterTest {
+public final class ExcelWriterTest {
 
 	private static final String PATH = "./test.xlsx";
 	private static List<BookDto> exampleDtos;
 	private final String SHEET_NAME = "test";
 
-	private ExcelWriter excelWriter;
+	private SpreadSheetWriter excelWriter;
 
 	@Before
 	public void init() {
@@ -65,22 +65,17 @@ public class ExcelWriterTest {
 
 		int counter = 0;
 		for (Row row : sheet) {
-			for (Cell cell : row) {
-				counter++;
-			}
+			counter += row.getPhysicalNumberOfCells();
 		}
 
 		assertEquals(47, counter);
 	}
 
 	private XSSFSheet getSheet() {
-		try {
+		return getOrRethrowException(() -> {
 			FileInputStream excelFile = new FileInputStream(new File(PATH));
 			return new XSSFWorkbook(excelFile).getSheetAt(0);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+		});
 	}
 
 	@After

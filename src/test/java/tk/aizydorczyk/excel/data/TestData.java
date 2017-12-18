@@ -1,7 +1,7 @@
 package tk.aizydorczyk.excel.data;
 
-
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import tk.aizydorczyk.excel.common.model.AuthorDto;
 import tk.aizydorczyk.excel.common.model.BookDto;
 import tk.aizydorczyk.excel.common.model.LenderDto;
@@ -11,7 +11,24 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TestData {
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
+public final class TestData {
+
+	public final static String BOOK = "Book";
+	public final static String BOOK_ID = "BOOK_ID";
+	public final static String BOOK_NAME = "BOOK_NAME";
+	public final static String RELEASE_DATE = "RELEASE_DATE";
+	public final static String AUTHOR = "Author";
+	public final static String AUTHOR_ID = "AUTHOR_ID";
+	public final static String AUTHOR_FIRST_NAME = "AUTHOR_FIRST_NAME";
+	public final static String AUTHOR_LAST_NAME = "AUTHOR_LAST_NAME";
+	public final static String LENDER = "Lender";
+	public final static String LENDER_ID = "LENDER_ID";
+	public final static String LENDER_FIRST_NAME = "LENDER_FIRST_NAME";
+	public final static String LENDER_LAST_NAME = "LENDER_LAST_NAME";
+	public final static String STRINGS = "strings";
 
 	private final static String LENDER_TEST_FNAME_1 = "LENDER_TEST_FNAME_1";
 	private final static String LENDER_TEST_FNAME_2 = "LENDER_TEST_FNAME_2";
@@ -31,7 +48,7 @@ public class TestData {
 	private final static String BOOK_TEST_NAME_2 = "BOOK_TEST_NAME_2";
 
 	@Getter
-	private static List<BookDto> exampleDtos = new ArrayList<>();
+	private static List<BookDto> exampleDtos;
 
 	static {
 		LenderDto lender1 = LenderDto.builder().id(1L).firstName(LENDER_TEST_FNAME_1).lastName(LENDER_TEST_LNAME_1).build();
@@ -45,7 +62,6 @@ public class TestData {
 		BookDto book2 = BookDto.builder().id(2L).name(BOOK_TEST_NAME_2).releaseDate(LocalDate.of(2010, 12, 12)).author(author2).lenders(Arrays.asList(lender3, lender4, lender5)).build();
 
 		book1.setStrings(Arrays.asList("A", "B", "C", "D", "E", "F"));
-
 		exampleDtos = Arrays.asList(book1, book2);
 	}
 

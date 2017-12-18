@@ -18,7 +18,8 @@ public enum Messages {
 	WRONG_FILE_EXTENSION("Wrong file extension"),
 	FILE_CREATION_FAIL("File creation error"),
 	CLASS_MUST_NOT_BE_NULL("The class must not be null"),
-	STYLE_INITIALIZATION_FAIL("Style initialization fail");
+	STYLE_INITIALIZATION_FAIL("Style initialization fail"),
+	FILE_SAVE_ERROR("File saving failed");
 
 	private final String message;
 

@@ -2,28 +2,27 @@ package tk.aizydorczyk.excel.common.model;
 
 import lombok.Builder;
 import lombok.Data;
-import tk.aizydorczyk.excel.common.annotation.ExcelColumn;
-import tk.aizydorczyk.excel.common.annotation.ExcelGroup;
+import tk.aizydorczyk.excel.api.annotation.SpreadSheetColumn;
+import tk.aizydorczyk.excel.api.annotation.SpreadSheetGroup;
 import tk.aizydorczyk.excel.common.model.style.NonDataHeaderStyle;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@ExcelGroup(header = "Book", styleClass = NonDataHeaderStyle.class)
+@SpreadSheetGroup(header = "Book", styleClass = NonDataHeaderStyle.class)
 @Data
 @Builder
 public class BookDto {
-
-	@ExcelColumn(header = "BOOK_ID")
+	@SpreadSheetColumn(header = "BOOK_ID")
 	private Long id;
-	@ExcelColumn(header = "BOOK_NAME")
+	@SpreadSheetColumn(header = "BOOK_NAME")
 	private String name;
-	@ExcelColumn(header = "RELEASE_DATE")
+	@SpreadSheetColumn(header = "RELEASE_DATE")
 	private LocalDate releaseDate;
-	@ExcelColumn(header = "Author")
+	@SpreadSheetColumn(header = "Author")
 	private AuthorDto author;
-	@ExcelColumn(header = "Lender")
+	@SpreadSheetColumn(header = "Lender")
 	private List<LenderDto> lenders;
-	@ExcelColumn(header = "strings")
+	@SpreadSheetColumn(header = "strings")
 	private List<String> strings;
 }

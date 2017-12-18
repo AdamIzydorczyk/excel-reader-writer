@@ -6,6 +6,7 @@ import tk.aizydorczyk.excel.common.model.BookDto;
 import tk.aizydorczyk.excel.common.model.DataCell;
 import tk.aizydorczyk.excel.common.model.Header;
 import tk.aizydorczyk.excel.data.TestData;
+import tk.aizydorczyk.excel.writer.cells.ExcelCellsGenerator;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,9 +15,21 @@ import java.util.stream.Collectors;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static tk.aizydorczyk.excel.data.TestData.AUTHOR;
+import static tk.aizydorczyk.excel.data.TestData.AUTHOR_FIRST_NAME;
+import static tk.aizydorczyk.excel.data.TestData.AUTHOR_ID;
+import static tk.aizydorczyk.excel.data.TestData.AUTHOR_LAST_NAME;
+import static tk.aizydorczyk.excel.data.TestData.BOOK;
+import static tk.aizydorczyk.excel.data.TestData.BOOK_ID;
+import static tk.aizydorczyk.excel.data.TestData.BOOK_NAME;
+import static tk.aizydorczyk.excel.data.TestData.LENDER;
+import static tk.aizydorczyk.excel.data.TestData.LENDER_FIRST_NAME;
+import static tk.aizydorczyk.excel.data.TestData.LENDER_ID;
+import static tk.aizydorczyk.excel.data.TestData.LENDER_LAST_NAME;
+import static tk.aizydorczyk.excel.data.TestData.RELEASE_DATE;
+import static tk.aizydorczyk.excel.data.TestData.STRINGS;
 
-public class ExcelCellsGeneratorTest {
-
+public final class ExcelCellsGeneratorTest {
 
 	private List<String> listOfExpectedHeadersNames;
 	private ExcelCellsGenerator excelCellsGenerator;
@@ -25,7 +38,20 @@ public class ExcelCellsGeneratorTest {
 	@Before
 	public void init() {
 		final List<BookDto> exampleDtos = TestData.getExampleDtos();
-		listOfExpectedHeadersNames = Arrays.asList("Book", "BOOK_ID", "BOOK_NAME", "RELEASE_DATE", "Author", "AUTHOR_ID", "AUTHOR_FIRST_NAME", "AUTHOR_LAST_NAME", "Lender", "LENDER_ID", "LENDER_FIRST_NAME", "LENDER_LAST_NAME", "strings");
+		listOfExpectedHeadersNames = Arrays.asList(
+				BOOK,
+				BOOK_ID,
+				BOOK_NAME,
+				RELEASE_DATE,
+				AUTHOR,
+				AUTHOR_ID,
+				AUTHOR_FIRST_NAME,
+				AUTHOR_LAST_NAME,
+				LENDER,
+				LENDER_ID,
+				LENDER_FIRST_NAME,
+				LENDER_LAST_NAME,
+				STRINGS);
 		this.excelCellsGenerator = ExcelCellsGenerator.ofAnnotatedObjects(exampleDtos);
 		this.headers = excelCellsGenerator.getHeaders();
 	}
@@ -195,7 +221,7 @@ public class ExcelCellsGeneratorTest {
 		List<DataCell> dataCells = excelCellsGenerator.getDataCells();
 		long quantityOfBookTestName2Header = dataCells.stream()
 				.filter(dataCell ->
-						dataCell.getHeader().getHeaderName().equals("BOOK_NAME"))
+						dataCell.getHeader().getHeaderName().equals(BOOK_NAME))
 				.count();
 		assertEquals(2, quantityOfBookTestName2Header);
 	}
@@ -205,7 +231,7 @@ public class ExcelCellsGeneratorTest {
 		List<DataCell> dataCells = excelCellsGenerator.getDataCells();
 		long quantityOfAuthorTestName2Header = dataCells.stream()
 				.filter(dataCell ->
-						dataCell.getHeader().getHeaderName().equals("LENDER_ID"))
+						dataCell.getHeader().getHeaderName().equals(LENDER_ID))
 				.count();
 		assertEquals(5, quantityOfAuthorTestName2Header);
 	}

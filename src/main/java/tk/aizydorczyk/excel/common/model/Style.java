@@ -25,6 +25,24 @@ public class Style {
 		DEFAULT_HEADER_STYLE = getDefaultStyle();
 	}
 
+	private Style dataCellsStyle;
+	private HorizontalAlignment horizontalAlignment;
+	private VerticalAlignment verticalAlignment;
+	private Color foregroundColor;
+	private Short oldFormatForegroundColorIndex;
+	private Short fontHeight;
+	private String fontName;
+	private Color fontColor;
+	private Short oldFormatFontColorIndex;
+	private Boolean isFontBold;
+	private Boolean isFontItalic;
+	private Byte fontUnderline;
+	private BorderStyle borderTop;
+	private BorderStyle borderBottom;
+	private BorderStyle borderLeft;
+	private BorderStyle borderRight;
+	private FillPatternType fillPattern;
+
 	private static Style getDefaultStyle() {
 		return Style
 				.builder()
@@ -41,30 +59,8 @@ public class Style {
 				.isFontItalic(false)
 				.fontUnderline(Font.U_NONE)
 				.fillPattern(FillPatternType.NO_FILL)
-				.foregroundColor(new Color(0,0,0))
+				.foregroundColor(new Color(0, 0, 0))
 				.oldFormatForegroundColorIndex(IndexedColors.WHITE.getIndex())
 				.build();
 	}
-
-	private Style dataCellsStyle;
-
-	private HorizontalAlignment horizontalAlignment;
-	private VerticalAlignment verticalAlignment;
-	private Color foregroundColor;
-	private Short oldFormatForegroundColorIndex;
-
-	private Short fontHeight;
-	private String fontName;
-	private Color fontColor;
-	private Short oldFormatFontColorIndex;
-	private Boolean isFontBold;
-	private Boolean isFontItalic;
-	private Byte fontUnderline;
-
-	private BorderStyle borderTop;
-	private BorderStyle borderBottom;
-	private BorderStyle borderLeft;
-	private BorderStyle borderRight;
-
-	private FillPatternType fillPattern;
 }
