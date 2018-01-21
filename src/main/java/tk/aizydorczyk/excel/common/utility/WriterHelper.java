@@ -1,6 +1,5 @@
 package tk.aizydorczyk.excel.common.utility;
 
-import lombok.NoArgsConstructor;
 import tk.aizydorczyk.excel.api.SpreadSheetStyle;
 import tk.aizydorczyk.excel.api.annotation.SpreadSheetColumn;
 import tk.aizydorczyk.excel.api.annotation.SpreadSheetGroup;
@@ -18,24 +17,25 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
-import static lombok.AccessLevel.PRIVATE;
-import static tk.aizydorczyk.excel.common.enums.Messages.CLASS_MUST_NOT_BE_NULL;
-import static tk.aizydorczyk.excel.common.utility.ExceptionHelper.*;
+import static tk.aizydorczyk.excel.common.messages.Messages.CLASS_MUST_NOT_BE_NULL;
+import static tk.aizydorczyk.excel.common.utility.ExceptionHelper.getOrRethrowException;
 
-@NoArgsConstructor(access = PRIVATE)
 public final class WriterHelper {
+
+	private WriterHelper() {
+	}
 
 	public static Class<?> getCollectionGenericType(Field field) {
 		final ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
 		return (Class<?>) parameterizedType.getActualTypeArguments()[0];
 	}
 
-	public static boolean isCollection(Field field) {
-		return Collection.class.isAssignableFrom(field.getType());
+	public static boolean isCollection(Class<?> clazz) {
+		return Collection.class.isAssignableFrom(clazz);
 	}
 
-	public static boolean isComplexObject(Field field) {
-		return nonNull(field.getType().getAnnotation(SpreadSheetGroup.class));
+	public static boolean isComplexObject(Class<?> clazz) {
+		return nonNull(clazz.getAnnotation(SpreadSheetGroup.class));
 	}
 
 	@SuppressWarnings("unchecked")

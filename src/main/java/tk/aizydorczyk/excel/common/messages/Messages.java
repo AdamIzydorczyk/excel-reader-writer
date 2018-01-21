@@ -1,10 +1,5 @@
-package tk.aizydorczyk.excel.common.enums;
+package tk.aizydorczyk.excel.common.messages;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
-@AllArgsConstructor
-@Getter
 public enum Messages {
 	MORE_FIELDS_THAN_HEADERS("More fields than headers"),
 	MORE_HEADERS_THAN_FIELDS("More headers than fields"),
@@ -19,8 +14,17 @@ public enum Messages {
 	FILE_CREATION_FAIL("File creation error"),
 	CLASS_MUST_NOT_BE_NULL("The class must not be null"),
 	STYLE_INITIALIZATION_FAIL("Style initialization fail"),
-	FILE_SAVE_ERROR("File saving failed");
+	FILE_SAVE_ERROR("File saving failed"),
+	FILE_CLOSE_FAIL("File closing failed"),
+	CANNOT_CAST_TO_COLLECTION("Cannot cast to collection");
 
 	private final String message;
 
+	Messages(String message) {
+		this.message = message;
+	}
+
+	public String getMessage() {
+		return this.message;
+	}
 }

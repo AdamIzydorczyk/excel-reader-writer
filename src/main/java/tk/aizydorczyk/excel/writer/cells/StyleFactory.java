@@ -1,15 +1,14 @@
 package tk.aizydorczyk.excel.writer.cells;
 
 import tk.aizydorczyk.excel.api.SpreadSheetStyle;
-import tk.aizydorczyk.excel.common.enums.Messages;
 import tk.aizydorczyk.excel.common.exceptions.ExcelWriterException;
+import tk.aizydorczyk.excel.common.messages.Messages;
 import tk.aizydorczyk.excel.common.model.Style;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
-import static tk.aizydorczyk.excel.common.enums.Messages.STYLE_INITIALIZATION_FAIL;
+import static tk.aizydorczyk.excel.common.messages.Messages.STYLE_INITIALIZATION_FAIL;
 import static tk.aizydorczyk.excel.common.model.Style.DEFAULT_HEADER_STYLE;
 import static tk.aizydorczyk.excel.common.utility.ExceptionHelper.getOrRethrowException;
 
@@ -23,9 +22,7 @@ final class StyleFactory {
 	}
 
 	Style getStyle(Class<? extends SpreadSheetStyle> styleClass) {
-		return Optional.ofNullable(stylesMap.get(styleClass))
-				.orElseGet(() ->
-						createStyle(styleClass));
+		return stylesMap.computeIfAbsent(styleClass, this::createStyle);
 	}
 
 	private Style createStyle(Class<? extends SpreadSheetStyle> styleClass) {
@@ -34,9 +31,7 @@ final class StyleFactory {
 
 		spreadSheetStyle.configureStyle(excelStyleConfigurator);
 
-		final Style style = excelStyleConfigurator.getStyle();
-		stylesMap.put(styleClass, style);
-		return style;
+		return excelStyleConfigurator.getStyle();
 	}
 
 	private SpreadSheetStyle instantiateStyle(Class<? extends SpreadSheetStyle> styleClass) {

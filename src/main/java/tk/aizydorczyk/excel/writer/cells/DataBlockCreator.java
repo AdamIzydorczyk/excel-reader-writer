@@ -1,9 +1,8 @@
 package tk.aizydorczyk.excel.writer.cells;
 
-import lombok.Getter;
 import tk.aizydorczyk.excel.api.annotation.SpreadSheetColumn;
-import tk.aizydorczyk.excel.common.enums.Messages;
 import tk.aizydorczyk.excel.common.exceptions.ExcelWriterException;
+import tk.aizydorczyk.excel.common.messages.Messages;
 import tk.aizydorczyk.excel.common.model.DataBlock;
 import tk.aizydorczyk.excel.common.model.Header;
 
@@ -11,9 +10,9 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static tk.aizydorczyk.excel.common.enums.Messages.MORE_FIELDS_THAN_HEADERS;
-import static tk.aizydorczyk.excel.common.enums.Messages.MORE_HEADERS_THAN_FIELDS;
-import static tk.aizydorczyk.excel.common.enums.Messages.NO_MAIN_HEADER;
+import static tk.aizydorczyk.excel.common.messages.Messages.MORE_FIELDS_THAN_HEADERS;
+import static tk.aizydorczyk.excel.common.messages.Messages.MORE_HEADERS_THAN_FIELDS;
+import static tk.aizydorczyk.excel.common.messages.Messages.NO_MAIN_HEADER;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.getFieldsListWithAnnotation;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.selectMainHeaderOrThrow;
 
@@ -21,7 +20,6 @@ final class DataBlockCreator {
 
 	private final List<?> annotatedObjects;
 
-	@Getter
 	private final List<DataBlock> generatedDataBlocks;
 
 	private DataBlockCreator(List<?> annotatedObjects, List<Header> headers) {
@@ -59,7 +57,8 @@ final class DataBlockCreator {
 			final Field field = fields.get(index);
 			final Header header = headers.get(index);
 
-			dataBlock.addInternalBlocksWithHeader(header, getListOfDataBlocks(field, untypedObject, header));
+			final List<DataBlock> listOfDataBlocks = getListOfDataBlocks(field, untypedObject, header);
+			dataBlock.addInternalBlocksWithHeader(header, listOfDataBlocks);
 		}
 		return dataBlock;
 	}
@@ -86,6 +85,10 @@ final class DataBlockCreator {
 				.untypedObject(untypedObject)
 				.header(header)
 				.build();
+	}
+
+	public List<DataBlock> getGeneratedDataBlocks() {
+		return this.generatedDataBlocks;
 	}
 
 	static final class DataBlockCreateFail extends ExcelWriterException {

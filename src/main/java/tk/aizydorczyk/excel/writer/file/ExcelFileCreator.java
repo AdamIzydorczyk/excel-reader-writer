@@ -10,13 +10,14 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFFont;
-import tk.aizydorczyk.excel.common.enums.Messages;
 import tk.aizydorczyk.excel.common.exceptions.ExcelWriterException;
+import tk.aizydorczyk.excel.common.messages.Messages;
 import tk.aizydorczyk.excel.common.model.DataCell;
 import tk.aizydorczyk.excel.common.model.Header;
 import tk.aizydorczyk.excel.common.model.Style;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +26,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
-import static tk.aizydorczyk.excel.common.enums.Messages.WRONG_FILE_EXTENSION;
+import static tk.aizydorczyk.excel.common.messages.Messages.FILE_CREATION_FAIL;
+import static tk.aizydorczyk.excel.common.messages.Messages.WRONG_FILE_EXTENSION;
 import static tk.aizydorczyk.excel.common.model.Style.DEFAULT_HEADER_STYLE;
-import static tk.aizydorczyk.excel.common.utility.ExceptionHelper.executeOrRethrowException;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.getExtension;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.orDefaultParameter;
 
@@ -37,9 +38,12 @@ public final class ExcelFileCreator {
 
 	private final Path path;
 
+	private final StyleCreator styleCreator;
+
 	private ExcelFileCreator(Path path) {
 		this.workbook = initializeWorkbook(path);
 		this.path = path;
+		this.styleCreator = new StyleCreator(workbook);
 	}
 
 	public static ExcelFileCreator ofPath(Path path) {
@@ -78,15 +82,11 @@ public final class ExcelFileCreator {
 	}
 
 	private void saveFile() {
-		executeOrRethrowException(
-				() -> {
-					final FileOutputStream outputStream = new FileOutputStream(path.toString());
-					workbook.write(outputStream);
-					workbook.close();
-				},
-				() -> new ExcelFileCreateFail(Messages.FILE_SAVE_ERROR)
-		);
-
+		try (FileOutputStream outputStream = new FileOutputStream(path.toString())) {
+			workbook.write(outputStream);
+		} catch (IOException ex) {
+			throw new ExcelFileCreateFail(FILE_CREATION_FAIL, ex);
+		}
 	}
 
 	private void createCellByHeader(Map<Integer, Row> mapOfRows, Header header, Sheet sheet) {
@@ -94,7 +94,7 @@ public final class ExcelFileCreator {
 		final Cell cell = row.createCell(header.getStartColumnPosition());
 
 		cell.setCellValue(header.getHeaderName());
-		cell.setCellStyle(createStyle(header.getStyle()));
+		cell.setCellStyle(styleCreator.createStyle(header.getStyle()));
 
 		if (header.getStartColumnPosition() != header.getEndColumnPosition()) {
 			sheet.addMergedRegion(new CellRangeAddress(
@@ -106,84 +106,11 @@ public final class ExcelFileCreator {
 		}
 	}
 
-	private CellStyle createStyle(Style style) {
-		final CellStyle cellStyle = workbook.createCellStyle();
-
-		if (isNull(style)) {
-			style = DEFAULT_HEADER_STYLE;
-		}
-
-		setForegroundColor(style, cellStyle);
-
-		cellStyle.setAlignment(
-				orDefaultParameter(style.getHorizontalAlignment(), DEFAULT_HEADER_STYLE.getHorizontalAlignment()));
-		cellStyle.setVerticalAlignment(
-				orDefaultParameter(style.getVerticalAlignment(), DEFAULT_HEADER_STYLE.getVerticalAlignment()));
-
-		cellStyle.setFont(createFont(style));
-
-		cellStyle.setBorderTop(
-				orDefaultParameter(style.getBorderTop(), DEFAULT_HEADER_STYLE.getBorderTop()));
-		cellStyle.setBorderBottom(
-				orDefaultParameter(style.getBorderBottom(), DEFAULT_HEADER_STYLE.getBorderBottom()));
-		cellStyle.setBorderLeft(
-				orDefaultParameter(style.getBorderLeft(), DEFAULT_HEADER_STYLE.getBorderLeft()));
-		cellStyle.setBorderRight(
-				orDefaultParameter(style.getBorderRight(), DEFAULT_HEADER_STYLE.getBorderRight()));
-		cellStyle.setFillPattern(
-				orDefaultParameter(style.getFillPattern(), DEFAULT_HEADER_STYLE.getFillPattern()));
-
-		return cellStyle;
-	}
-
-
-	private Font createFont(Style style) {
-		final Font font = workbook.createFont();
-
-		font.setFontHeightInPoints(
-				orDefaultParameter(style.getFontHeight(), DEFAULT_HEADER_STYLE.getFontHeight()));
-		font.setFontName(
-				orDefaultParameter(style.getFontName(), DEFAULT_HEADER_STYLE.getFontName()));
-		font.setUnderline(
-				orDefaultParameter(style.getFontUnderline(), DEFAULT_HEADER_STYLE.getFontUnderline()));
-
-		setHeaderFontColor(style, font);
-
-		font.setBold(
-				orDefaultParameter(style.getIsFontBold(), DEFAULT_HEADER_STYLE.getIsFontBold()));
-		font.setItalic(
-				orDefaultParameter(style.getIsFontItalic(), DEFAULT_HEADER_STYLE.getIsFontItalic()));
-		font.setUnderline(
-				orDefaultParameter(style.getFontUnderline(), DEFAULT_HEADER_STYLE.getFontUnderline()));
-
-		return font;
-	}
-
-	private void setForegroundColor(Style style, CellStyle cellStyle) {
-		if (cellStyle instanceof XSSFCellStyle) {
-			XSSFColor color = new XSSFColor(
-					orDefaultParameter(style.getForegroundColor(), DEFAULT_HEADER_STYLE.getForegroundColor()));
-			((XSSFCellStyle) cellStyle).setFillForegroundColor(color);
-		} else {
-			cellStyle.setFillForegroundColor(
-					orDefaultParameter(style.getOldFormatForegroundColorIndex(), DEFAULT_HEADER_STYLE.getOldFormatForegroundColorIndex()));
-		}
-	}
-
-	private void setHeaderFontColor(Style style, Font font) {
-		if (font instanceof XSSFFont) {
-			XSSFColor color = new XSSFColor(orDefaultParameter(style.getFontColor(), DEFAULT_HEADER_STYLE.getFontColor()));
-			((XSSFFont) font).setColor(color);
-		} else {
-			font.setColor(orDefaultParameter(style.getOldFormatFontColorIndex(), DEFAULT_HEADER_STYLE.getOldFormatFontColorIndex()));
-		}
-	}
-
 	private void createCellByDataCell(Map<Integer, Row> mapOfRows, DataCell dataCell) {
 		final Row row = mapOfRows.get(dataCell.getRowPosition());
 		final Cell cell = row.createCell(dataCell.getColumnPosition());
-		final Style dataCellsStyle = dataCell.getHeader().getStyle().getDataCellsStyle();
-		cell.setCellStyle(createStyle(dataCellsStyle));
+		final Style dataCellsStyle = dataCell.getStyle();
+		cell.setCellStyle(styleCreator.createStyle(dataCellsStyle));
 		cell.setCellValue(String.valueOf(dataCell.getData()));    // TODO: cell data type classification
 	}
 
@@ -197,8 +124,13 @@ public final class ExcelFileCreator {
 	}
 
 	private final class ExcelFileCreateFail extends ExcelWriterException {
-		ExcelFileCreateFail(Messages message) {
-			super(message.getMessage());
+		ExcelFileCreateFail(Messages message, IOException ex) {
+			super(ex, message.getMessage());
+		}
+
+		ExcelFileCreateFail(Messages messages) {
+			super(messages.getMessage());
 		}
 	}
+
 }

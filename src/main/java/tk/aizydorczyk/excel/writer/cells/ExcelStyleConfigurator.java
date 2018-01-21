@@ -1,13 +1,11 @@
 package tk.aizydorczyk.excel.writer.cells;
 
-import lombok.Getter;
 import tk.aizydorczyk.excel.common.model.Style;
 import tk.aizydorczyk.excel.common.style.CellStyleConfigurator;
 import tk.aizydorczyk.excel.common.style.StyleConfigurator;
 
 final class ExcelStyleConfigurator implements StyleConfigurator {
 
-	@Getter
 	private final Style style;
 
 	private ExcelCellStyleConfigurator styleConfigurator;
@@ -32,5 +30,9 @@ final class ExcelStyleConfigurator implements StyleConfigurator {
 
 	@Override
 	public void end() {
+	}
+
+	public Style getStyle() {
+		return this.style;
 	}
 }

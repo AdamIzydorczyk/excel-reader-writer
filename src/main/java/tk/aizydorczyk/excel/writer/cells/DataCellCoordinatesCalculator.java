@@ -1,6 +1,5 @@
 package tk.aizydorczyk.excel.writer.cells;
 
-import lombok.Getter;
 import tk.aizydorczyk.excel.common.model.DataBlock;
 import tk.aizydorczyk.excel.common.model.DataCell;
 import tk.aizydorczyk.excel.common.model.Header;
@@ -9,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 final class DataCellCoordinatesCalculator {
-	@Getter
 	private final List<DataCell> dataCells;
 
 	private DataCellCoordinatesCalculator(List<DataBlock> dataBlocks, int firstDataRowPosition) {
@@ -59,5 +57,9 @@ final class DataCellCoordinatesCalculator {
 				.map(DataBlock::getCells)
 				.flatMap(List::stream)
 				.collect(Collectors.toList());
+	}
+
+	public List<DataCell> getDataCells() {
+		return this.dataCells;
 	}
 }

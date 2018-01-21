@@ -1,19 +1,13 @@
 package tk.aizydorczyk.excel.data;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import tk.aizydorczyk.excel.common.model.AuthorDto;
 import tk.aizydorczyk.excel.common.model.BookDto;
 import tk.aizydorczyk.excel.common.model.LenderDto;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static lombok.AccessLevel.PRIVATE;
-
-@NoArgsConstructor(access = PRIVATE)
 public final class TestData {
 
 	public final static String BOOK = "Book";
@@ -47,7 +41,6 @@ public final class TestData {
 	private final static String BOOK_TEST_NAME_1 = "BOOK_TEST_NAME_1";
 	private final static String BOOK_TEST_NAME_2 = "BOOK_TEST_NAME_2";
 
-	@Getter
 	private static List<BookDto> exampleDtos;
 
 	static {
@@ -65,5 +58,10 @@ public final class TestData {
 		exampleDtos = Arrays.asList(book1, book2);
 	}
 
+	private TestData() {
+	}
 
+	public static List<BookDto> getExampleDtos() {
+		return TestData.exampleDtos;
+	}
 }

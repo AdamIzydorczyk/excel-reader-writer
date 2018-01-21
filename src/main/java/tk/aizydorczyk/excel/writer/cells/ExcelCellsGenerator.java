@@ -1,17 +1,15 @@
 package tk.aizydorczyk.excel.writer.cells;
 
-import lombok.Getter;
 import tk.aizydorczyk.excel.common.model.DataCell;
 import tk.aizydorczyk.excel.common.model.Header;
 
+import java.util.Collections;
 import java.util.List;
 
 public final class ExcelCellsGenerator {
 
-	@Getter
 	private final List<DataCell> dataCells;
 
-	@Getter
 	private final List<Header> headers;
 
 	private ExcelCellsGenerator(List<?> annotatedObjects) {
@@ -25,5 +23,13 @@ public final class ExcelCellsGenerator {
 
 	public static ExcelCellsGenerator ofAnnotatedObjects(List<?> objects) {
 		return new ExcelCellsGenerator(objects);
+	}
+
+	public List<DataCell> getDataCells() {
+		return Collections.unmodifiableList(this.dataCells);
+	}
+
+	public List<Header> getHeaders() {
+		return this.headers;
 	}
 }

@@ -1,8 +1,5 @@
 package tk.aizydorczyk.excel.writer.cells;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import tk.aizydorczyk.excel.common.model.DataBlock;
 import tk.aizydorczyk.excel.common.model.Header;
 
@@ -11,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 
-@AllArgsConstructor
 enum DataBlockType {
 	SINGLE_WITH_MULTIPLE_CELLS(true, true, new SingleDataBlockWithMultipleCellsStrategy()),
 	SINGLE_WITH_SINGLE_CELL(false, true, new SingleDataBlockWithSingleCellStrategy()),
@@ -29,11 +25,15 @@ enum DataBlockType {
 		}
 	}
 
-	@Getter
 	private final boolean overCollection;
-	@Getter
 	private final boolean overData;
 	private final BlocksCreationStrategy blocksCreationStrategy;
+
+	DataBlockType(boolean overCollection, boolean overData, BlocksCreationStrategy blocksCreationStrategy) {
+		this.overCollection = overCollection;
+		this.overData = overData;
+		this.blocksCreationStrategy = blocksCreationStrategy;
+	}
 
 	static DataBlockType getTypeByHeader(Header header) {
 		return typeMap.get(new Key(
@@ -45,10 +45,39 @@ enum DataBlockType {
 		return this.blocksCreationStrategy.createBlocks(creationDto, blockCreationFunction);
 	}
 
-	@AllArgsConstructor
-	@EqualsAndHashCode
+	private boolean isOverCollection() {
+		return this.overCollection;
+	}
+
+	private boolean isOverData() {
+		return this.overData;
+	}
+
 	private static final class Key {
 		private final boolean overCollection;
 		private final boolean overData;
+
+		Key(boolean overCollection, boolean overData) {
+			this.overCollection = overCollection;
+			this.overData = overData;
+		}
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o) return true;
+			if (o == null || getClass() != o.getClass()) return false;
+
+			Key key = (Key) o;
+
+			return overCollection == key.overCollection
+					&& overData == key.overData;
+		}
+
+		@Override
+		public int hashCode() {
+			int result = (overCollection ? 1 : 0);
+			result = 31 * result + (overData ? 1 : 0);
+			return result;
+		}
 	}
 }

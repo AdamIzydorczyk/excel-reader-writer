@@ -1,21 +1,19 @@
 package tk.aizydorczyk.excel.writer.cells;
 
-import lombok.Getter;
-import tk.aizydorczyk.excel.common.enums.Messages;
 import tk.aizydorczyk.excel.common.exceptions.ExcelWriterException;
+import tk.aizydorczyk.excel.common.messages.Messages;
 import tk.aizydorczyk.excel.common.model.Header;
 
 import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
-import static tk.aizydorczyk.excel.common.enums.Messages.NO_BOTTOM_HEADERS;
-import static tk.aizydorczyk.excel.common.enums.Messages.NO_DATA_HEADERS;
-import static tk.aizydorczyk.excel.common.enums.Messages.NO_MAIN_HEADER;
+import static tk.aizydorczyk.excel.common.messages.Messages.NO_BOTTOM_HEADERS;
+import static tk.aizydorczyk.excel.common.messages.Messages.NO_DATA_HEADERS;
+import static tk.aizydorczyk.excel.common.messages.Messages.NO_MAIN_HEADER;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.notSetBefore;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.selectMainHeaderOrThrow;
 
-@Getter
 final class HeadersCoordinatesCalculator {
 
 	private final List<Header> calculatedHeaders;
@@ -51,7 +49,7 @@ final class HeadersCoordinatesCalculator {
 				.collect(Collectors.toList());
 
 		int columnIndex = 0;
-		for (final Header dataHeader : dataHeaders) {
+		for (Header dataHeader : dataHeaders) {
 			dataHeader.setStartColumnPosition(columnIndex);
 			dataHeader.setEndColumnPosition(columnIndex);
 			columnIndex++;
@@ -67,7 +65,7 @@ final class HeadersCoordinatesCalculator {
 	}
 
 	private void calculateStartAndEndColumnPositions(List<Header> notOverDataHeaders) {
-		for (final Header header : notOverDataHeaders) {
+		for (Header header : notOverDataHeaders) {
 			if (notSetBefore(header.getStartColumnPosition())) {
 				calculateStartColumnPositions(header);
 			}
@@ -95,7 +93,7 @@ final class HeadersCoordinatesCalculator {
 	}
 
 	private void calculateBottomRowsPosition(Header header) {
-		for (final Header bottomHeader : header.getBottomHeaders()) {
+		for (Header bottomHeader : header.getBottomHeaders()) {
 			if (notSetBefore(header.getRowPosition())) {
 				header.setRowPosition(0);
 			}
@@ -131,6 +129,14 @@ final class HeadersCoordinatesCalculator {
 				.map(Header::getRowPosition)
 				.orElseThrow(() ->
 						new CoordinatesCalculateFail(NO_DATA_HEADERS));
+	}
+
+	public List<Header> getCalculatedHeaders() {
+		return this.calculatedHeaders;
+	}
+
+	public int getFirstDataRowPosition() {
+		return this.firstDataRowPosition;
 	}
 
 	private final class CoordinatesCalculateFail extends ExcelWriterException {

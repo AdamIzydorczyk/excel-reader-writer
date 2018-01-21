@@ -2,8 +2,8 @@ package tk.aizydorczyk.excel.writer.cells;
 
 import tk.aizydorczyk.excel.api.annotation.SpreadSheetColumn;
 import tk.aizydorczyk.excel.api.annotation.SpreadSheetGroup;
-import tk.aizydorczyk.excel.common.enums.Messages;
 import tk.aizydorczyk.excel.common.exceptions.ExcelWriterException;
+import tk.aizydorczyk.excel.common.messages.Messages;
 import tk.aizydorczyk.excel.common.model.Header;
 
 import java.lang.reflect.Field;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static tk.aizydorczyk.excel.common.enums.Messages.NO_ANNOTATION;
-import static tk.aizydorczyk.excel.common.enums.Messages.NO_DATA;
+import static tk.aizydorczyk.excel.common.messages.Messages.NO_ANNOTATION;
+import static tk.aizydorczyk.excel.common.messages.Messages.NO_DATA;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.getAnnotationOrThrow;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.getCollectionGenericType;
 import static tk.aizydorczyk.excel.common.utility.WriterHelper.getFieldsListWithAnnotation;
@@ -71,7 +71,7 @@ final class HeadersInitializer {
 
 	private void createBelowHeadersByAnnotatedFields(Class<?> aClass, Header topHeader) {
 		final List<Field> annotatedFields = getFieldsListWithAnnotation(aClass, SpreadSheetColumn.class);
-		for (final Field field : annotatedFields) {
+		for (Field field : annotatedFields) {
 			createBottomHeaderAndClassify(field, topHeader);
 		}
 	}
@@ -84,9 +84,9 @@ final class HeadersInitializer {
 	}
 
 	private void classifyField(Field field, Header upperHeader, Header bottomHeader, SpreadSheetColumn excelColumnAnnotation) {
-		if (isCollection(field)) {
+		if (isCollection(field.getType())) {
 			createHeaderOverCollection(field, upperHeader, bottomHeader, excelColumnAnnotation);
-		} else if (isComplexObject(field)) {
+		} else if (isComplexObject(field.getType())) {
 			createHeaderOverDataBlock(field.getType(), upperHeader);
 		} else {
 			createHeaderOverData(upperHeader, bottomHeader, excelColumnAnnotation);

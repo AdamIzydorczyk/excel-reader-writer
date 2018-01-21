@@ -1,13 +1,11 @@
 package tk.aizydorczyk.excel.common.utility;
 
-import lombok.NoArgsConstructor;
-
 import java.util.function.Supplier;
 
-import static lombok.AccessLevel.PRIVATE;
-
-@NoArgsConstructor(access = PRIVATE)
 public final class ExceptionHelper {
+
+	private ExceptionHelper() {
+	}
 
 	public static <T, E extends RuntimeException> T getOrRethrowException(ThrowingGetter<T, E> throwingGetter, Supplier<E> exceptionSupplier) {
 		return throwingGetter.getAndRethrowWithCustomException(exceptionSupplier);
